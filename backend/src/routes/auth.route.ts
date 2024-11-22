@@ -5,9 +5,10 @@ import {
 } from "../schemas/auth.schema.js";
 import { register } from "../services/auth.service.js";
 import { ErrorSchema } from "../schemas/error.schema.js";
+import { createHono } from "../lib/HonoWrapper.js";
 
 
-const authRouter = new OpenAPIHono();
+const authRouter = createHono()
 
 const registerRoute = createRoute({
   method: "post",

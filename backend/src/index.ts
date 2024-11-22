@@ -3,17 +3,25 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
 import { HttpError } from "./lib/errors.js";
 import authRouter from "./routes/auth.route.js";
+import { Hono } from "hono";
+import { logger } from "hono/logger";
 
-const app = new OpenAPIHono({ strict: false });
 
+const app = new OpenAPIHono().basePath("/api");
 
-app.route("api", authRouter);
+app.use(logger())
+
+app.route("/", authRouter);
 
 
 
 app.onError((err, c) => {
   if(err instanceof HttpError) {
-    return err.getResponse();
+    return c.json({
+      success : false,
+      message : err.message,
+      error : err.message
+    }, err.status)
   }
   else {
     return c.json({
@@ -32,7 +40,7 @@ app.doc("/openapi", {
   },
 });
 
-app.get("/docs", swaggerUI({ url: "/openapi" }));
+app.get("/docs", swaggerUI({ url: "/api/openapi" }));
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);

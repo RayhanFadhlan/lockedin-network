@@ -1,6 +1,6 @@
 import { z } from '@hono/zod-openapi'
 
-// Schema definitions
+
 export const RegisterSchema = z.object({
   username: z.string()
     .min(3, 'Username must be at least 3 characters')
