@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
+    "@hono/swagger-ui": "^0.4.1",
+    "@hono/zod-openapi": "^0.18.0",
     "@prisma/client": "^5.22.0",
-    "hono": "^4.6.11"
+    "hono": "^4.6.11",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",

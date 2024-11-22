@@ -1,36 +1,43 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve } from "@hono/node-server";
+import { swaggerUI } from "@hono/swagger-ui";
+import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { HttpError } from "./lib/errors.js";
+import authRouter from "./routes/auth.route.js";
 
-const app = new Hono()
+const app = new OpenAPIHono({ strict: false });
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
 
+app.route("api", authRouter);
 
 
 
 app.onError((err, c) => {
-  console.error(`${err}`);
-  return c.json({
-    status: 'error',
-    message: err.message || 'Internal Server Error'
-  }, 500)
-})
+  if(err instanceof HttpError) {
+    return err.getResponse();
+  }
+  else {
+    return c.json({
+      success: false,
+      message: "Internal server error",
+      error: err.message
+    }, 500)
+  }
+});
 
+app.doc("/openapi", {
+  openapi: "3.0.0",
+  info: {
+    version: "1.0.0",
+    title: "My API",
+  },
+});
 
-app.notFound((c) => {
-  return c.json({
-    status: 'error',
-    message: 'Not Found'
-  }, 404)
-})
+app.get("/docs", swaggerUI({ url: "/openapi" }));
 
-
-const port = Number(process.env.PORT) || 3000
-console.log(`Server is running on http://localhost:${port}`)
+const port = 3000;
+console.log(`Server is running on port ${port}`);
 
 serve({
   fetch: app.fetch,
-  port
-})
+  port,
+});
