@@ -4,6 +4,7 @@ import type { RegisterRequest } from "../schemas/auth.schema.js";
 export const createUser = async (
   username: string,
   email: string,
+  name: string,
   hashedPassword: string
 ) => {
   return prisma.user.create({
@@ -11,6 +12,11 @@ export const createUser = async (
       username: username,
       email: email,
       passwordHash: hashedPassword,
+      userDetail: {
+        create: {
+          name: name,
+        },
+      },
     },
   });
 };

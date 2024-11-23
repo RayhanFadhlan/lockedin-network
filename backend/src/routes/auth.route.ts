@@ -43,13 +43,15 @@ const registerRoute = createRoute({
 });
 
 authRouter.openapi(registerRoute, async (c) => {
-    const { username, email, password } = await c.req.json();
-    const response = await register(username, email, password);
+    const { username, email, password, name } = await c.req.json();
+    const token = await register(username, email, password, name);
+    c.header('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
+
     return c.json({
       success: true,
       message: "Registration successful",
       body: {
-        token: response,
+        token: token,
       },
     }, 200)
   

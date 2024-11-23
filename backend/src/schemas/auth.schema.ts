@@ -13,6 +13,12 @@ export const RegisterSchema = z.object({
     .openapi({
       example: 'john@example.com'
     }),
+  name: z.string()
+    .min(3, 'Name must be at least 3 characters')
+    .max(255, 'Name must be less than 255 characters')
+    .openapi({
+      example: 'John'
+    }),
   password: z.string()
     .min(6, 'Password must be at least 6 characters')
     .openapi({

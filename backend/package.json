@@ -17,7 +17,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.11.17",
+    "bcrypt": "^5.1.1",
     "prisma": "^5.22.0",
     "tsx": "^4.7.1",
     "typescript": "^5.6.3"

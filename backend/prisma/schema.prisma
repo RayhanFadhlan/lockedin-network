@@ -24,9 +24,25 @@ model User {
   sentConnections Connection[] @relation("SentConnections")
   receivedConnections Connection[] @relation("ReceivedConnections")
   pushSubscriptions PushSubscription[]
+  userDetail    UserDetail?
 
   @@map("users")
 }
+
+
+model UserDetail {
+  id          BigInt   @id @default(autoincrement())
+  name        String
+  description String?
+  profilePhoto  String?  @map("profile_photo")
+  userId      BigInt   @unique @map("user_id")
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("users_detail")
+}
+
 
 model Feed {
   id        BigInt    @id @default(autoincrement())
