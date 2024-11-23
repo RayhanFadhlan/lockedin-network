@@ -5,6 +5,7 @@ import { HttpError } from "./lib/errors.js";
 import authRouter from "./routes/auth.route.js";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
+import profileRouter from "./routes/profile.route.js";
 
 
 const app = new OpenAPIHono().basePath("/api");
@@ -12,7 +13,7 @@ const app = new OpenAPIHono().basePath("/api");
 app.use(logger())
 
 app.route("/", authRouter);
-
+app.route("/", profileRouter);
 
 
 app.onError((err, c) => {

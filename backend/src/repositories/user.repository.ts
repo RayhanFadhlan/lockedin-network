@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import type { RegisterRequest } from "../schemas/auth.schema.js";
+
 
 export const createUser = async (
   username: string,
@@ -32,3 +32,13 @@ export const findUserByUsername = async (username: string) => {
     where: { username: username },
   });
 };
+
+export const findUserbyId = async (userId: string) => {
+  const id = parseInt(userId);
+  return prisma.user.findUnique({
+    where: { id: id },
+    include: {
+      userDetail: true,
+    }
+  });
+}
