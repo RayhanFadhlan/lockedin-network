@@ -42,3 +42,30 @@ export const findUserbyId = async (userId: string) => {
     }
   });
 }
+
+export const updateUserDetail = async (
+  userId: string,
+  name: string,
+  description: string,
+  profilePhoto: string,
+  workHistory: string,
+  skills: string
+) => {
+  const id = parseInt(userId);
+  const updatedUserDetail = await prisma.userDetail.update({
+    where: { userId: id },
+    data: {
+      name: name,
+      description: description,
+      profilePhoto: profilePhoto,
+      workHistory: workHistory,
+      skills: skills,
+    },
+  });
+
+  return {
+    ...updatedUserDetail,
+    id: updatedUserDetail.id.toString(),
+    userId: updatedUserDetail.userId.toString(),
+  };
+}

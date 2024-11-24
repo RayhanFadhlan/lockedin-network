@@ -1,8 +1,11 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { ZodError } from "zod";
+import type { JwtVariables } from 'hono/jwt'
+
+type Variables = JwtVariables
 
 function createHono() {
-  return new OpenAPIHono({
+  return new OpenAPIHono<{ Variables: Variables }>({
     defaultHook: (result, c) => {
       if (!result.success) {
         return c.json({

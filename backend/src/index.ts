@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route.js";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import profileRouter from "./routes/profile.route.js";
+import { HTTPException } from "hono/http-exception";
 
 
 const app = new OpenAPIHono().basePath("/api");
@@ -15,9 +16,14 @@ app.use(logger())
 app.route("/", authRouter);
 app.route("/", profileRouter);
 
+app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+  type: 'http',
+  scheme: 'bearer',
+});
+
 
 app.onError((err, c) => {
-  if(err instanceof HttpError) {
+  if(err instanceof HttpError || err instanceof HTTPException) {
     return c.json({
       success : false,
       message : err.message,

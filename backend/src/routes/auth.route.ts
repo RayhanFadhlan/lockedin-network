@@ -4,11 +4,10 @@ import {
   RegisterSchema,
 } from "../schemas/auth.schema.js";
 import { register } from "../services/auth.service.js";
-import { ErrorSchema } from "../schemas/error.schema.js";
+import { ErrorSchema } from "../schemas/default.schema.js";
 import { createHono } from "../lib/HonoWrapper.js";
 
-
-const authRouter = createHono()
+const authRouter = createHono();
 
 const registerRoute = createRoute({
   method: "post",
@@ -43,18 +42,20 @@ const registerRoute = createRoute({
 });
 
 authRouter.openapi(registerRoute, async (c) => {
-    const { username, email, password, name } = await c.req.json();
-    const token = await register(username, email, password, name);
-    c.header('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
+  const { username, email, password, name } = await c.req.valid('json');
+  const token = await register(username, email, password, name);
+  c.header("Set-Cookie", `token=${token}; HttpOnly; Path=/; Max-Age=3600`);
 
-    return c.json({
+  return c.json(
+    {
       success: true,
       message: "Registration successful",
       body: {
         token: token,
       },
-    }, 200)
-  
+    },
+    200
+  );
 });
 
 export default authRouter;

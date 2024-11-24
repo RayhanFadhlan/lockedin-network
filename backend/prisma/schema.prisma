@@ -35,6 +35,8 @@ model UserDetail {
   name        String
   description String?
   profilePhoto  String?  @map("profile_photo")
+  skills      String?
+  workHistory String?  @map("work_history")
   userId      BigInt   @unique @map("user_id")
 
   // Relations
