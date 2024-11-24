@@ -8,6 +8,7 @@ import { logger } from "hono/logger";
 import profileRouter from "./routes/profile.route.js";
 import { HTTPException } from "hono/http-exception";
 import { apiReference } from "@scalar/hono-api-reference";
+import userRouter from "./routes/user.route.js";
 
 
 const app = new OpenAPIHono().basePath("/api");
@@ -16,6 +17,7 @@ app.use(logger())
 
 app.route("/", authRouter);
 app.route("/", profileRouter);
+app.route("/", userRouter);
 
 app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
   type: 'http',

@@ -10,13 +10,13 @@ import { createFile, deleteFile } from "../lib/storage.js";
 
 export const getProfile = async (
   userId: string,
-  authHeader: string | undefined
+  token: string | undefined
 ) => {
   const user = await findUserbyId(userId);
   if (!user) {
     throw new HttpError(HttpStatus.BAD_REQUEST, { message: "User not found" });
   }
-  if (!authHeader) {
+  if (!token) {
     return {
       success: true,
       body: {
@@ -26,7 +26,7 @@ export const getProfile = async (
       },
     };
   } else {
-    const token = authHeader.split(" ")[1];
+    // const token = authHeader.split(" ")[1];
     const { header, payload } = await decode(token);
     const userId2 = payload.userId as string;
 

@@ -7,6 +7,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
   try {
     const jwtMiddleware = jwt({
       secret: process.env.JWT_SECRET as string,
+      cookie: 'token'
     });
 
     await jwtMiddleware(c, next);

@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
+import { getCookie } from "hono/cookie";
 
 const profileRouter = createHono();
 
@@ -84,9 +85,10 @@ profileRouter.openapi(getProfileRoute, async (c) => {
 
   const { user_id } = c.req.valid('param')
 
-  const authHeader = c.req.header("Authorization");
+  // const authHeader = c.req.header("Authorization");
+  const token = getCookie(c, "token");
 
-  const response = await getProfile(user_id, authHeader);
+  const response = await getProfile(user_id, token);
 
   return c.json(
     {
