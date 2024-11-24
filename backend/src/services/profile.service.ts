@@ -20,9 +20,9 @@ export const getProfile = async (
     return {
       success: true,
       body: {
-        name: user.userDetail?.name,
-        profile_photo: user.userDetail?.profilePhoto,
-        description: user.userDetail?.description,
+        name: user.name,
+        profile_photo: user.profilePhoto,
+        description: user.description,
         relation: "unauthorized",
       },
     };
@@ -39,12 +39,12 @@ export const getProfile = async (
       return {
         success: true,
         body: {
-          name: user.userDetail?.name,
+          name: user.name,
           email: user.email,
-          profile_photo: user.userDetail?.profilePhoto,
-          description: user.userDetail?.description,
-          job_history: "riwayat kerja dummy",
-          skills: "keterampilan dummy",
+          profile_photo: user.profilePhoto,
+          description: user.description,
+          job_history: user.workHistory,
+          skills: user.skills,
           relation: "owner",
           relevant_posts: feeds,
         },
@@ -55,10 +55,10 @@ export const getProfile = async (
       return {
         success: true,
         body: {
-          name: user.userDetail?.name,
-          profilePhoto: user.userDetail?.profilePhoto,
-          description: user.userDetail?.description,
-          jobHistory: "riwayat kerja dummy",
+          name: user.name,
+          profile_photo: user.profilePhoto,
+          description: user.description,
+          job_history: user.workHistory,
           relation: "unconnected",
         },
       };
@@ -69,11 +69,11 @@ export const getProfile = async (
       return {
         success: true,
         body: {
-          name: user.userDetail?.name,
-          profile_photo: user.userDetail?.profilePhoto,
-          description: user.userDetail?.description,
-          job_history: "gatau dah ini paan",
-          skills: "keterampilan dummy",
+          name: user.name,
+          profile_photo: user.profilePhoto,
+          description: user.description,
+          job_history: user.workHistory,
+          skills: user.skills,
           relation: "connected",
           relevant_posts: feeds,
         },
@@ -99,9 +99,9 @@ export const updateProfile = async (
   if (userId !== userIdToken) {
     throw new HttpError(HttpStatus.UNAUTHORIZED, { message: "Unauthorized" });
   }
-  if (user.userDetail?.profilePhoto) {
+  if (user.profilePhoto) {
     console.log("delete file");
-    const oldPhoto = user.userDetail.profilePhoto;
+    const oldPhoto = user.profilePhoto;
     console.log("delete file", oldPhoto); 
     await deleteFile(oldPhoto);
   }

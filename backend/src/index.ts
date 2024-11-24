@@ -7,6 +7,7 @@ import { Hono } from "hono";
 import { logger } from "hono/logger";
 import profileRouter from "./routes/profile.route.js";
 import { HTTPException } from "hono/http-exception";
+import { apiReference } from "@scalar/hono-api-reference";
 
 
 const app = new OpenAPIHono().basePath("/api");
@@ -47,7 +48,17 @@ app.doc("/openapi", {
   },
 });
 
-app.get("/docs", swaggerUI({ url: "/api/openapi" }));
+app.get(
+  '/docs',
+  apiReference({
+    theme: 'purple',
+    spec: {
+      url: '/api/openapi',
+    },
+  }),
+)
+
+
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);

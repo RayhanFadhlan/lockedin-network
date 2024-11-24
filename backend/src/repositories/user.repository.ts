@@ -1,22 +1,23 @@
 import { prisma } from "../lib/prisma.js";
 
-
 export const createUser = async (
   username: string,
   email: string,
   name: string,
-  hashedPassword: string
+  hashedPassword: string,
+  profilePhoto: string = "",
+  workHistory: string = "",
+  skills: string = ""
 ) => {
   return prisma.user.create({
     data: {
       username: username,
       email: email,
       passwordHash: hashedPassword,
-      userDetail: {
-        create: {
-          name: name,
-        },
-      },
+      name: name,
+      profilePhoto: profilePhoto,
+      workHistory: workHistory,
+      skills: skills,
     },
   });
 };
@@ -37,11 +38,8 @@ export const findUserbyId = async (userId: string) => {
   const id = parseInt(userId);
   return prisma.user.findUnique({
     where: { id: id },
-    include: {
-      userDetail: true,
-    }
   });
-}
+};
 
 export const updateUserDetail = async (
   userId: string,
@@ -52,8 +50,8 @@ export const updateUserDetail = async (
   skills: string
 ) => {
   const id = parseInt(userId);
-  const updatedUserDetail = await prisma.userDetail.update({
-    where: { userId: id },
+  const updatedUser = await prisma.user.update({
+    where: { id: id },
     data: {
       name: name,
       description: description,
@@ -64,8 +62,7 @@ export const updateUserDetail = async (
   });
 
   return {
-    ...updatedUserDetail,
-    id: updatedUserDetail.id.toString(),
-    userId: updatedUserDetail.userId.toString(),
+    ...updatedUser,
+    id: updatedUser.id.toString(),
   };
-}
+};

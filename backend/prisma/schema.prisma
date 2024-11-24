@@ -12,6 +12,11 @@ model User {
   username      String     @unique
   email         String     @unique
   passwordHash  String     @map("password_hash")
+  name          String     @map("full_name")
+  description   String?
+  profilePhoto  String     @map("profile_photo_path")
+  skills        String?
+  workHistory   String?    @map("work_history")
   createdAt     DateTime   @default(now()) @map("created_at")
   updatedAt     DateTime   @updatedAt @map("updated_at")
   
@@ -24,27 +29,9 @@ model User {
   sentConnections Connection[] @relation("SentConnections")
   receivedConnections Connection[] @relation("ReceivedConnections")
   pushSubscriptions PushSubscription[]
-  userDetail    UserDetail?
 
   @@map("users")
 }
-
-
-model UserDetail {
-  id          BigInt   @id @default(autoincrement())
-  name        String
-  description String?
-  profilePhoto  String?  @map("profile_photo")
-  skills      String?
-  workHistory String?  @map("work_history")
-  userId      BigInt   @unique @map("user_id")
-
-  // Relations
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("users_detail")
-}
-
 
 model Feed {
   id        BigInt    @id @default(autoincrement())
