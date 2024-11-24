@@ -40,6 +40,14 @@ export const RegisterResponseSchema = z.object({
   })
 })
 
+export const LoginSchema = z.object({
+  identifier: z.string(),
+  password: z.string().min(8),
+});
+
+
+
+
 export type RegisterRequest = z.infer<typeof RegisterSchema>
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>
-
+export type LoginRequest = z.infer<typeof LoginSchema>

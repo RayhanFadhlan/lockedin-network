@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../lib/api";
+import toast from "react-hot-toast";
 
 interface LoginFormValues {
   identifier: string;
@@ -47,8 +49,15 @@ const LoginPage: React.FC = () => {
 
     if (validateForm()) {
       console.log("Form submitted", formData);
-      // logic kirim datanya di sini
-      navigate("/");
+
+      
+      api.post("/login", formData)
+      .then((res) => {
+        toast.success(res.data.message);
+        navigate("/");
+      })
+      .catch((err) => toast.error(err.response.data.message));
+
     }
   };
 

@@ -1,4 +1,5 @@
 import { HttpError, HttpStatus } from "../lib/errors.js";
+import { prisma } from "../lib/prisma.js";
 import { createUser, findUserByEmail, findUserByUsername } from "../repositories/user.repository.js";
 import bcrypt from "bcrypt";
 import { sign } from 'hono/jwt';
@@ -34,4 +35,33 @@ const hashPassword = async (password: string): Promise<string> => {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
+};
+
+export const login = async (identifier: string, password: string) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { username: identifier },
+        { email: identifier },
+      ],
+    },
+  });
+
+  if (!user) {
+    throw new HttpError(HttpStatus.BAD_REQUEST, { message: "Invalid credentials" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+  if (!isPasswordValid) {
+    throw new HttpError(HttpStatus.BAD_REQUEST, { message: "Invalid credentials" });
+  }
+
+  const payload = {
+    userId: user.id.toString(),
+    email: user.email,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  };
+  const token = await sign(payload, JWT_SECRET);
+  return token;
 };

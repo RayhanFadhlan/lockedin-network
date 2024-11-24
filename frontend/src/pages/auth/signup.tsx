@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../lib/api";
+import toast from "react-hot-toast";
 
 interface RegisterFormData {
   username: string;
@@ -53,12 +55,18 @@ const SignUpPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateEmail() && validatePasswords()) {
       console.log("Form submitted", formData);
-      // logic kirim datanya di sini
-      navigate("/");
+  
+      api
+        .post("/register", formData)
+        .then((res) => {
+          toast.success(res.data.message);
+          navigate("/login");
+        })
+        .catch((err) => toast.error(err.response.data.message));
     }
   };
 

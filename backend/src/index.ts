@@ -9,12 +9,16 @@ import profileRouter from "./routes/profile.route.js";
 import { HTTPException } from "hono/http-exception";
 import { apiReference } from "@scalar/hono-api-reference";
 import userRouter from "./routes/user.route.js";
+import { cors } from "hono/cors";
 
 
 const app = new OpenAPIHono().basePath("/api");
 
 app.use(logger())
-
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}))
 app.route("/", authRouter);
 app.route("/", profileRouter);
 app.route("/", userRouter);
