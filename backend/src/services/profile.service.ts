@@ -22,7 +22,6 @@ export const getProfile = async (
       body: {
         name: user.name,
         profile_photo: user.profilePhoto,
-        description: user.description,
         relation: "unauthorized",
       },
     };
@@ -42,7 +41,7 @@ export const getProfile = async (
           name: user.name,
           email: user.email,
           profile_photo: user.profilePhoto,
-          description: user.description,
+     
           job_history: user.workHistory,
           skills: user.skills,
           relation: "owner",
@@ -57,7 +56,7 @@ export const getProfile = async (
         body: {
           name: user.name,
           profile_photo: user.profilePhoto,
-          description: user.description,
+        
           job_history: user.workHistory,
           relation: "unconnected",
         },
@@ -71,7 +70,7 @@ export const getProfile = async (
         body: {
           name: user.name,
           profile_photo: user.profilePhoto,
-          description: user.description,
+     
           job_history: user.workHistory,
           skills: user.skills,
           relation: "connected",
@@ -85,7 +84,6 @@ export const getProfile = async (
 export const updateProfile = async (
   userId: string,
   name: string,
-  description: string,
   profilePhoto: File,
   workHistory: string,
   skills: string,
@@ -111,7 +109,6 @@ export const updateProfile = async (
   const userDetail = await updateUserDetail(
     userId,
     name,
-    description,
     filePath,
     workHistory,
     skills

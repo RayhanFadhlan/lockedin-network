@@ -9,7 +9,6 @@ export const GetProfileResponseSchema = z.object({
     name: z.string().optional(),
     email: z.string().optional(),
     profile_photo: z.string().optional().nullable(),
-    description: z.string().optional().nullable(),
     job_history: z.string().optional().nullable(),
     skills: z.string().optional().nullable(),
     relation: z.string(),
@@ -21,7 +20,6 @@ export const GetProfileResponseSchema = z.object({
 
 export const UpdateProfileSchema = z.object({
   name: z.string().min(3, 'Name must be at least 3 characters').max(255, 'Name must be less than 255 characters'),
-  description: z.string(),
   profile_photo: z.instanceof(File).or(z.string()).refine((file) => {
     if (file instanceof File) {
       return file.size <= MAX_IMAGE_SIZE && ACCEPTED_IMAGE_TYPES.includes(file.type);

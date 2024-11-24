@@ -44,7 +44,7 @@ export const findUserbyId = async (userId: string) => {
 export const updateUserDetail = async (
   userId: string,
   name: string,
-  description: string,
+ 
   profilePhoto: string,
   workHistory: string,
   skills: string
@@ -54,7 +54,6 @@ export const updateUserDetail = async (
     where: { id: id },
     data: {
       name: name,
-      description: description,
       profilePhoto: profilePhoto,
       workHistory: workHistory,
       skills: skills,

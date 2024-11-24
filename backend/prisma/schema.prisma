@@ -13,7 +13,6 @@ model User {
   email         String     @unique
   passwordHash  String     @map("password_hash")
   name          String     @map("full_name")
-  description   String?
   profilePhoto  String     @map("profile_photo_path")
   skills        String?
   workHistory   String?    @map("work_history")
