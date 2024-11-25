@@ -83,8 +83,9 @@ export const getProfile = async (
 
 export const updateProfile = async (
   userId: string,
-  name: string,
+  username: string,
   profilePhoto: File,
+  name: string,
   workHistory: string,
   skills: string,
   userIdToken: string
@@ -108,8 +109,9 @@ export const updateProfile = async (
   
   const userDetail = await updateUserDetail(
     userId,
-    name,
+    username,
     filePath,
+    name,
     workHistory,
     skills
   );

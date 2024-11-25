@@ -43,8 +43,9 @@ export const findUserbyId = async (userId: string) => {
 
 export const updateUserDetail = async (
   userId: string,
-  name: string,
+  username: string,
   profilePhoto: string,
+  name: string,
   workHistory: string,
   skills: string
 ) => {
@@ -52,8 +53,9 @@ export const updateUserDetail = async (
   const updatedUser = await prisma.user.update({
     where: { id: id },
     data: {
-      name: name,
+      username: username,
       profile_photo: profilePhoto,
+      name: name,
       work_history: workHistory,
       skills: skills,
     },
