@@ -46,11 +46,6 @@ const updateProfileRoute = createRoute({
   method: "put",
   path: "/profile/{user_id}",
   middleware: [authMiddleware] as const,
-  security: [
-    {
-      Bearer:[]
-    }
-  ],
   request: {
     params : UserIdParamsSchema,
     body: {
@@ -86,7 +81,7 @@ profileRouter.openapi(getProfileRoute, async (c) => {
   const { user_id } = c.req.valid('param')
 
   // const authHeader = c.req.header("Authorization");
-  const token = getCookie(c, "token");
+  const token = await getCookie(c, "token");
 
   const response = await getProfile(user_id, token);
 

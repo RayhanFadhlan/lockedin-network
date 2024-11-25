@@ -10,6 +10,7 @@ import { HTTPException } from "hono/http-exception";
 import { apiReference } from "@scalar/hono-api-reference";
 import userRouter from "./routes/user.route.js";
 import { cors } from "hono/cors";
+import { connectionRouter } from "./routes/connection.route.js";
 
 
 const app = new OpenAPIHono().basePath("/api");
@@ -22,12 +23,17 @@ app.use(cors({
 app.route("/", authRouter);
 app.route("/", profileRouter);
 app.route("/", userRouter);
+app.route("/", connectionRouter);
 
-app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+app.openAPIRegistry.registerComponent('securitySchemes', 'auth', {
   type: 'http',
   scheme: 'bearer',
 });
 
+
+
+
+app.openAPIRegistry
 
 app.onError((err, c) => {
   if(err instanceof HttpError || err instanceof HTTPException) {
@@ -50,8 +56,15 @@ app.doc("/openapi", {
   openapi: "3.0.0",
   info: {
     version: "1.0.0",
-    title: "My API",
+    title: "LockedIn",
+   
   },
+  security: [
+    {
+      auth: [],
+    },
+  ],
+  
 });
 
 app.get('/docs', swaggerUI({ url: '/api/openapi' }))

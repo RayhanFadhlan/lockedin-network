@@ -65,3 +65,18 @@ export const getMutualCount = async (userId: string, userTarget: string) => {
 
   return mutualConnections;
 };
+
+export const getConnectionRequestDb = async (userId: string) => {
+  const id = parseInt(userId);
+  const connectionRequest = await prisma.connectionRequest.findMany({
+    where: {
+      to_id: id,
+    },
+    select: {
+      from_id: true,
+      created_at: true,
+    },
+  });
+
+  return connectionRequest;
+}

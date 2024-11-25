@@ -1,4 +1,4 @@
-import { decode } from "hono/jwt";
+import { decode, verify } from "hono/jwt";
 import {
   findUserbyId,
   updateUserDetail,
@@ -27,7 +27,7 @@ export const getProfile = async (
     };
   } else {
     // const token = authHeader.split(" ")[1];
-    const { header, payload } = await decode(token);
+    const  payload  = await verify(token, process.env.JWT_SECRET as string);
     const userId2 = payload.userId as string;
 
     const connection = await isUserConnected(userId, userId2);
