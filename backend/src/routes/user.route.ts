@@ -3,6 +3,7 @@ import { ErrorSchema, SuccessSchema } from "../schemas/default.schema.js";
 import { UserSearchQuerySchema } from "../schemas/user.schema.js";
 import { createHono } from "../lib/HonoWrapper.js";
 import { searchUsers } from "../services/user.service.js";
+import { getCookie } from "hono/cookie";
 
 const userRouter = createHono();
 
@@ -26,13 +27,13 @@ const getUsersRoute = createRoute({
 
 userRouter.openapi(getUsersRoute, async (c) => {
   const { search } = c.req.valid('query');
-  
-  const users = await searchUsers(search);
+  const token = await getCookie(c, 'token');
+  const response = await searchUsers(token, search);
 
   return c.json({
     success: true,
     message: "Users fetched successfully",
-    body: users
+    body: response
   }, 200);
 });
 

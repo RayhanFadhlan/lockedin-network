@@ -13,10 +13,10 @@ export const createUser = async (
     data: {
       username: username,
       email: email,
-      passwordHash: hashedPassword,
+      password_hash: hashedPassword,
       name: name,
-      profilePhoto: profilePhoto,
-      workHistory: workHistory,
+      profile_photo: profilePhoto,
+      work_history: workHistory,
       skills: skills,
     },
   });
@@ -53,8 +53,8 @@ export const updateUserDetail = async (
     where: { id: id },
     data: {
       name: name,
-      profilePhoto: profilePhoto,
-      workHistory: workHistory,
+      profile_photo: profilePhoto,
+      work_history: workHistory,
       skills: skills,
     },
     select: {
@@ -62,8 +62,8 @@ export const updateUserDetail = async (
       username: true,
       email: true,
       name: true,
-      profilePhoto: true,
-      workHistory: true,
+      profile_photo: true,
+      work_history: true,
       skills: true,
     },
   });
@@ -73,8 +73,8 @@ export const updateUserDetail = async (
     username: updatedUser.username,
     email: updatedUser.email,
     name: updatedUser.name,
-    profile_photo: updatedUser.profilePhoto,
-    work_history: updatedUser.workHistory,
+    profile_photo: updatedUser.profile_photo,
+    work_history: updatedUser.work_history,
     skills: updatedUser.skills,
   };
 };
@@ -83,20 +83,10 @@ export const findUsers = async (searchQuery?: string) => {
   const users = await prisma.user.findMany({
     where: searchQuery
       ? {
-          OR: [
-            {
-              username: {
-                contains: searchQuery,
-                mode: "insensitive",
-              },
-            },
-            {
-              name: {
-                contains: searchQuery,
-                mode: "insensitive",
-              },
-            },
-          ],
+          name: {
+            contains: searchQuery,
+            mode: "insensitive",
+          },
         }
       : undefined,
     select: {
@@ -104,7 +94,7 @@ export const findUsers = async (searchQuery?: string) => {
       username: true,
       name: true,
       email: true,
-      profilePhoto: true,
+      profile_photo: true,
     },
   });
 
@@ -113,6 +103,6 @@ export const findUsers = async (searchQuery?: string) => {
     username: user.username,
     name: user.name,
     email: user.email,
-    profile_photo: user.profilePhoto,
+    profile_photo: user.profile_photo,
   }));
 };

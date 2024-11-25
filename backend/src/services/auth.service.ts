@@ -51,7 +51,7 @@ export const login = async (identifier: string, password: string) => {
     throw new HttpError(HttpStatus.BAD_REQUEST, { message: "Invalid credentials" });
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+  const isPasswordValid = await bcrypt.compare(password, user.password_hash);
   if (!isPasswordValid) {
     throw new HttpError(HttpStatus.BAD_REQUEST, { message: "Invalid credentials" });
   }

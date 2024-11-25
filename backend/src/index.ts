@@ -54,15 +54,7 @@ app.doc("/openapi", {
   },
 });
 
-app.get(
-  '/docs',
-  apiReference({
-    theme: 'purple',
-    spec: {
-      url: '/api/openapi',
-    },
-  }),
-)
+app.get('/docs', swaggerUI({ url: '/api/openapi' }))
 
 
 

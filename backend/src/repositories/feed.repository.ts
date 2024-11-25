@@ -4,7 +4,7 @@ export const getFeedsByUserId = async (userId : string) => {
   const id = parseInt(userId);
   return prisma.feed.findMany({
     where: {
-      userId: id
+      user_id: id
     }
   });
 

@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Mail, UserPlus } from "lucide-react";
 import { Avatar } from "./ui/avatar";
+import { Profile } from "@/lib/types";
 
-interface ProfileCardProps {
-  id: string;
-  name: string;
-  profile_photo: string;
-  isConnected: boolean;
-  mutual: string;
+interface ProfileCardProps extends Profile{
+
   isAuthenticated: boolean;
 }
 

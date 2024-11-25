@@ -21,7 +21,7 @@ export const getProfile = async (
       success: true,
       body: {
         name: user.name,
-        profile_photo: user.profilePhoto,
+        profile_photo: user.profile_photo,
         relation: "unauthorized",
       },
     };
@@ -40,9 +40,9 @@ export const getProfile = async (
         body: {
           name: user.name,
           email: user.email,
-          profile_photo: user.profilePhoto,
+          profile_photo: user.profile_photo,
      
-          job_history: user.workHistory,
+          job_history: user.work_history,
           skills: user.skills,
           relation: "owner",
           relevant_posts: feeds,
@@ -55,9 +55,9 @@ export const getProfile = async (
         success: true,
         body: {
           name: user.name,
-          profile_photo: user.profilePhoto,
+          profile_photo: user.profile_photo,
         
-          job_history: user.workHistory,
+          job_history: user.work_history,
           relation: "unconnected",
         },
       };
@@ -69,9 +69,9 @@ export const getProfile = async (
         success: true,
         body: {
           name: user.name,
-          profile_photo: user.profilePhoto,
+          profile_photo: user.profile_photo,
      
-          job_history: user.workHistory,
+          job_history: user.work_history,
           skills: user.skills,
           relation: "connected",
           relevant_posts: feeds,
@@ -97,9 +97,9 @@ export const updateProfile = async (
   if (userId !== userIdToken) {
     throw new HttpError(HttpStatus.UNAUTHORIZED, { message: "Unauthorized" });
   }
-  if (user.profilePhoto) {
+  if (user.profile_photo) {
     console.log("delete file");
-    const oldPhoto = user.profilePhoto;
+    const oldPhoto = user.profile_photo;
     console.log("delete file", oldPhoto); 
     await deleteFile(oldPhoto);
   }
