@@ -13,3 +13,11 @@ export interface Invitation {
   created_at: string;
   mutual: string;
 }
+
+export interface Connection {
+  id: string;
+  name: string;
+  profile_photo: string;
+  mutual: string;
+  isConnected: boolean;
+}

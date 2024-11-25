@@ -1,21 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { UsersIcon, Ellipsis, Trash2 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
+import { Connection } from "@/lib/types";
 
-interface ConnectionCard {
-  id: string;
-  name: string;
-  profile_photo: string;
-  detail: string;
-  isConnected: boolean;
-  mutual: string;
-}
+
+
 
 interface ConnectionCardProps {
-  connection: ConnectionCard;
+  connection: Connection;
   isMySelf: boolean;
   menuOpen: boolean;
   toggleMenu: () => void;
+  onConnect: (id: string) => void;
+  onUnconnect: (id: string) => void;
 }
 
 export function ConnectionCard({
@@ -23,17 +20,17 @@ export function ConnectionCard({
   isMySelf,
   menuOpen,
   toggleMenu,
+  onConnect,
+  onUnconnect
 }: ConnectionCardProps) {
 
-  const handleUnconnect = () => {
-    // Unconnect 
-  };
 
 
   return (
     <div className="p-4 flex sm:flex-row flex-col items-start sm:items-center border-b-2">
       <a href={connection.id} className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
         <Avatar
+          src={connection.profile_photo}
           alt={connection.name}
           className="w-16 h-16"
         />
@@ -44,9 +41,7 @@ export function ConnectionCard({
             {connection.name}
           </a>
         </h3>
-        <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
-          {connection.detail}
-        </p>
+      
         {connection.mutual && (
           <div className="flex items-center mt-2 text-xs text-muted-foreground">
             <UsersIcon className="w-4 h-4 mr-1" />
@@ -60,7 +55,7 @@ export function ConnectionCard({
             Message
           </Button>
         ) : (
-          <Button variant="outline" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto" onClick={() => onConnect(connection.id)}>
             Connect
           </Button>
         )}
@@ -79,7 +74,7 @@ export function ConnectionCard({
                     id="unconnect"
                     className="group flex rounded-md items-center w-full px-2 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => {
-                      handleUnconnect();
+                      onUnconnect(connection.id);
                       toggleMenu();
                     }}
                   >

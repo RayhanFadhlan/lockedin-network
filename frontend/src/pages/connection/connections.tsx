@@ -1,55 +1,61 @@
-import React, { useState } from "react";
+import  { useState, useEffect } from "react";
 import { ConnectionCard } from "@/components/connection-card";
+import { Connection } from "@/lib/types";
+import { useParams } from "react-router-dom";
+import api from "@/lib/api";
+import toast from "react-hot-toast";
 
-const connections = [
-  {
-    id: "1",
-    name: "Rafly Hanggaraksa",
-    profile_photo: "https://www.linkedin.com/in/raflyhanggaraksa",
-    detail:
-      "Informatics Engineering @ Institut Teknologi Bandung | Programming at DAGOZILLA",
-    mutual: "32",
-    isConnected: true,
-  },
-  {
-    id: "2",
-    name: "Rafly Hanggaraksa",
-    profile_photo: "https://www.linkedin.com/in/raflyhanggaraksa",
-    detail:
-      "Informatics Engineering @ Institut Teknologi Bandung | Programming at DAGOZILLA",
-    mutual: "32",
-    isConnected: true,
-  },
-  {
-    id: "3",
-    name: "Rafly Hanggaraksa",
-    profile_photo: "https://www.linkedin.com/in/raflyhanggaraksa",
-    detail:
-      "Informatics Engineering @ Institut Teknologi Bandung | Programming at DAGOZILLA",
-    mutual: "32",
-    isConnected: false,
-  },
-  {
-    id: "4",
-    name: "Rafly Hanggaraksa",
-    profile_photo: "https://www.linkedin.com/in/raflyhanggaraksa",
-    detail:
-      "Informatics Engineering @ Institut Teknologi Bandung | Programming at DAGOZILLA",
-    mutual: "32",
-    isConnected: false,
-  },
-];
-
-const numberOfConnections = 64;
-const ismySelf = true;
 
 const Connections = () => {
-  // const { userId } = useParams<{ userId: string }>();
+  const { user_id } = useParams<{ user_id: string }>();
+  const [connections, setConnections] = useState<Connection[]>([]);
+  const [numberOfConnections, setNumberOfConnections] = useState(0);
+  const [isMySelf, setIsMySelf] = useState(true);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchConnections();
+  }, []);
+
+  const fetchConnections = async () => {
+    await api.get(`/connection/${user_id}`)
+    .then((response) => {
+      setConnections(response.data.body.connections);
+      setNumberOfConnections(response.data.body.connectionCount);
+      setIsMySelf(response.data.body.isMySelf);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  };
 
   const toggleMenu = (id: string) => {
     setOpenMenuId(openMenuId === id ? null : id);
   };
+
+  const handleConnect = async (userId: string) => {
+    await api.post(`/connection/send/${userId}`)
+    .then(() => {
+      toast.success("Connection request sent");
+    }).catch((err) => {
+      console.error(err);
+      toast.error(err.response.data.message);
+    });
+
+  };
+
+  const handleUnconnect = async (userId: string) => {
+    await api.delete(`/connection/${userId}`)
+    .then(() => {
+      setConnections((prev) => prev.filter((conn) => conn.id !== userId));
+      setNumberOfConnections((prev) => prev - 1);
+      toast.success("Connection removed");
+    }).catch((err) => {
+      console.error(err);
+      toast.error(err.response.data.message);
+    });
+
+  }
 
   return (
     <div className="artdecoCard">
@@ -63,9 +69,11 @@ const Connections = () => {
           <ConnectionCard
             key={connection.id}
             connection={connection}
-            isMySelf={ismySelf}
+            isMySelf={isMySelf}
             menuOpen={openMenuId === connection.id}
             toggleMenu={() => toggleMenu(connection.id)}
+            onConnect={handleConnect}
+            onUnconnect={handleUnconnect}
           />
         ))}
       </div>

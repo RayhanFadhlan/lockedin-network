@@ -22,7 +22,7 @@ export const isUserConnected = async (
     }
   });
 
-  return connection;
+  return !!connection;
 }
 
 export const getMutualCount = async (userId: string, userTarget: string) => {

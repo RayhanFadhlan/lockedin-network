@@ -1,39 +1,41 @@
-import { getConnectionRequestDb, getMutualCount } from "../repositories/connection.repository.js";
+import {
+  getConnectionRequestDb,
+  getMutualCount,
+  isUserConnected,
+} from "../repositories/connection.repository.js";
 
 import { prisma } from "../lib/prisma.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
 import { verify } from "hono/jwt";
 
 export const getConnectionRequest = async (userId: string) => {
-
   const id = parseInt(userId);
   const connectionRequests = await prisma.connectionRequest.findMany({
     where: {
-      to_id: id
+      to_id: id,
     },
     select: {
       from_user: {
         select: {
           id: true,
           name: true,
-          profile_photo: true
-        }
+          profile_photo: true,
+        },
       },
-      created_at: true
+      created_at: true,
     },
     orderBy: {
-      created_at: 'desc'
-    }
+      created_at: "desc",
+    },
   });
 
-  
   const formattedRequests = await Promise.all(
     connectionRequests.map(async (request) => ({
       id: String(request.from_user.id),
       name: request.from_user.name,
       profile_photo: request.from_user.profile_photo,
       created_at: request.created_at.toDateString(),
-      mutual: await getMutualCount(userId, String(request.from_user.id))
+      mutual: await getMutualCount(userId, String(request.from_user.id)),
     }))
   );
 
@@ -89,7 +91,7 @@ export const sendConnectionRequest = async (
 
 export const rejectConnectionRequest = async (
   userId: string,
-  userTarget: string,
+  userTarget: string
 ) => {
   const id = parseInt(userId);
   const target = parseInt(userTarget);
@@ -121,7 +123,7 @@ export const rejectConnectionRequest = async (
 
 export const acceptConnectionRequest = async (
   userId: string,
-  userTarget: string,
+  userTarget: string
 ) => {
   const id = parseInt(userId);
   const target = parseInt(userTarget);
@@ -167,19 +169,11 @@ export const acceptConnectionRequest = async (
   return "Connection request accepted successfully";
 };
 
-export const getConnection = async (userId: string, token : string | undefined) => {
+export const getConnection = async (
+  userId: string,
+  token: string | undefined
+) => {
   const id = parseInt(userId);
-
-  let isMyself;
-  let mutualCount = 0;
-  if(token){
-    const payload = await verify(token, process.env.JWT_SECRET as string);
-    const tokenUserId = payload.userId as string;
-    isMyself = id === parseInt(tokenUserId);
-    mutualCount = await getMutualCount(tokenUserId, userId);
-  }else{
-    isMyself = false;
-  }
 
   const user = await prisma.user.findUnique({
     where: { id: id },
@@ -191,37 +185,55 @@ export const getConnection = async (userId: string, token : string | undefined) 
     });
   }
 
-
   const connections = await prisma.connection.findMany({
     where: { from_id: id },
     select: {
       to_id: true,
-      created_at: true,
       to_user: {
         select: {
-          id: true,
           name: true,
-          profile_photo: true
-        }
-      }
-    }
+          profile_photo: true,
+        },
+      },
+    },
   });
 
-  const connectionCount = connections.length;
-  
-  
-  
-  return {
-    connections : connections.map(connection => {
-      return {
-        id: Number(connection.to_user.id),
-        name: connection.to_user.name,
-        profile_photo: connection.to_user.profile_photo,
-        created_at: connection.created_at
-      }
-    }),
-    connectionCount,
-    mutualCount,
+  if (token) {
+    const payload = await verify(token, process.env.JWT_SECRET as string);
+    const tokenUserId = payload.userId as string;
+    const isMyself = id === parseInt(tokenUserId);
+
+    const connectionsWithMutual = await Promise.all(
+      connections.map(async (connection) => {
+        const mutual = await getMutualCount(
+          tokenUserId,
+          String(connection.to_id)
+        );
+        const isConnected = await isUserConnected(
+          tokenUserId,
+          String(connection.to_id)
+        );
+
+        return {
+          id: String(connection.to_id),
+          name: connection.to_user.name,
+          profile_photo: connection.to_user.profile_photo,
+          isConnected: isConnected,
+          mutual: String(mutual),
+        };
+      })
+    );
+    return {
+      connections: connectionsWithMutual,
+      connectionCount: connections.length,
+      isMySelf: isMyself,
+    };
+  } else {
+    return {
+      connections: { ...connections, isConnected: false, mutual: 0 },
+      connectionCount: connections.length,
+      isMySelf: false,
+    };
   }
 };
 
