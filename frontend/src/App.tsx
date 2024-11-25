@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/home";
+import Footer  from "./components/footer";
 import SignUpPage from "./pages/auth/signup";
 import LoginPage from "./pages/auth/login";
 import { Toaster } from "react-hot-toast";
@@ -15,6 +16,7 @@ function App() {
             </Routes>
             <Toaster/>
         </main>
+        <Footer />
     </Router>
   );
 }
