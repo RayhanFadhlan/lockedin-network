@@ -62,7 +62,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen bg-#f4f2ee;">
       <div className="w-full max-w-md bg-white p-8 rounded-lgx shadow-lh">
         <h2 className="text-2xl font-bold text-center text-gray-800">
           Sign in to LockedIn
