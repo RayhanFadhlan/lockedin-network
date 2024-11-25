@@ -6,6 +6,7 @@ import LoginPage from "./pages/auth/login";
 import { Toaster } from "react-hot-toast";
 import Invitations from "./pages/connection/invitations";
 import Connections from "./pages/connection/connections";
+import UserList from "./pages/connection/user-list";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/invitation" element={<Invitations/>} />
             <Route path="/connections/:userId" element={<Connections/>} />
+            <Route path="/users" element={<UserList/>} />
             </Routes>
             <Toaster/>
         </main>
