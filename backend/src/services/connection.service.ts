@@ -5,9 +5,39 @@ import { HttpError, HttpStatus } from "../lib/errors.js";
 import { verify } from "hono/jwt";
 
 export const getConnectionRequest = async (userId: string) => {
-  const connectionRequest = await getConnectionRequestDb(userId);
 
-  return connectionRequest;
+  const id = parseInt(userId);
+  const connectionRequests = await prisma.connectionRequest.findMany({
+    where: {
+      to_id: id
+    },
+    select: {
+      from_user: {
+        select: {
+          id: true,
+          name: true,
+          profile_photo: true
+        }
+      },
+      created_at: true
+    },
+    orderBy: {
+      created_at: 'desc'
+    }
+  });
+
+  
+  const formattedRequests = await Promise.all(
+    connectionRequests.map(async (request) => ({
+      id: String(request.from_user.id),
+      name: request.from_user.name,
+      profile_photo: request.from_user.profile_photo,
+      created_at: request.created_at.toDateString(),
+      mutual: await getMutualCount(userId, String(request.from_user.id))
+    }))
+  );
+
+  return formattedRequests;
 };
 
 export const sendConnectionRequest = async (
@@ -59,7 +89,7 @@ export const sendConnectionRequest = async (
 
 export const rejectConnectionRequest = async (
   userId: string,
-  userTarget: string
+  userTarget: string,
 ) => {
   const id = parseInt(userId);
   const target = parseInt(userTarget);
@@ -91,7 +121,7 @@ export const rejectConnectionRequest = async (
 
 export const acceptConnectionRequest = async (
   userId: string,
-  userTarget: string
+  userTarget: string,
 ) => {
   const id = parseInt(userId);
   const target = parseInt(userTarget);

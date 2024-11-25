@@ -81,5 +81,9 @@ export const getConnectionRequestDb = async (userId: string) => {
     }
   });
 
-  return connectionRequest;
+  return connectionRequest.map(request => ({
+    ...request,
+    from_id: request.from_id,
+    created_at: request.created_at.toISOString()
+  }));
 }
