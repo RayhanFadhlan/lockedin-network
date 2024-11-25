@@ -29,7 +29,7 @@ export const getMutualCount = async (userId: string, userTarget: string) => {
   const user = parseInt(userId);
   const userTargetId = parseInt(userTarget);
 
-  // Get the list of IDs that userTarget is connected to
+
   const userTargetConnections = await prisma.connection.findMany({
     where: {
       from_id: userTargetId,
@@ -41,7 +41,7 @@ export const getMutualCount = async (userId: string, userTarget: string) => {
 
   const userTargetConnectionIds = userTargetConnections.map(connection => connection.to_id);
 
-  // Get the list of IDs that user is connected to
+ 
   const userConnections = await prisma.connection.findMany({
     where: {
       from_id: user,
@@ -53,7 +53,7 @@ export const getMutualCount = async (userId: string, userTarget: string) => {
 
   const userConnectionIds = userConnections.map(connection => connection.to_id);
 
-  // Count mutual connections
+  
   const mutualConnections = await prisma.connection.count({
     where: {
       from_id: user,
@@ -76,6 +76,9 @@ export const getConnectionRequestDb = async (userId: string) => {
       from_id: true,
       created_at: true,
     },
+    orderBy: {
+      created_at: "desc",
+    }
   });
 
   return connectionRequest;
