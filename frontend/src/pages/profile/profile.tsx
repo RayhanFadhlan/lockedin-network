@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserPlus, UserMinus} from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ interface ProfileData {
   relation: "unauthorized" | "unconnected" | "connected" | "owner";
 }
 
-const Profile: React.FC = () => {
+const Profile = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);

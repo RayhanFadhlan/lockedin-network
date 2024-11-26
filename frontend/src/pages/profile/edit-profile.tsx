@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import api from "@/lib/api"; // buat data
 
-const EditProfile: React.FC = () => {
+const EditProfile = () => {
   const navigate = useNavigate();
   const { user_id } = useParams<{ user_id: string }>();
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
@@ -191,6 +191,8 @@ const EditProfile: React.FC = () => {
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={() => navigate("/profile")}
+            // nanti diubah pake id juga
           >
             Save Changes
           </button>
