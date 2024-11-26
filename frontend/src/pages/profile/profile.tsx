@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import api from "@/lib/api"; //buat fetch data
 
 interface ProfileData {
+    username: string;
   name: string;
   profile_photo: string;
   work_history: string;
@@ -34,6 +35,7 @@ const Profile: React.FC = () => {
 
   const fetchDummyProfile = () => {
     const dummyProfile: ProfileData = {
+        username: "rayhanfa",
       name: "Rayhan F.A",
       profile_photo: "",
       work_history: "Mahasiswa ITB GAJELAS",
@@ -59,13 +61,13 @@ const Profile: React.FC = () => {
     return;
   }
 
-  const {name, profile_photo, work_history, skills, connection_count, relevant_posts, relation} = profileData;
+  const {username, name, profile_photo, work_history, skills, connection_count, relevant_posts, relation} = profileData;
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="relative bg-white shadow-md rounded-lg overflow-hidden">
         <div className="h-[150px] bg-[#a0b4b7]" />
-        <div className="absolute left-8 bottom-[122px]">
+        <div className="absolute left-8 bottom-[146px]">
           <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden">
             <img
               src={profile_photo || "../profile.svg"}
@@ -87,10 +89,11 @@ const Profile: React.FC = () => {
           </button>
         )}
 
-        <div className="pt-16 px-11 bg-white h-[180px]">
+        <div className="pt-14 px-11 bg-white h-[200px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold">{name}</h1>
+              <h1 className="text-2xl font-semibold mt-1">{username}</h1>
+              <p className="text-gray-500 text-sm mt-1">{name}</p>
               <p className="text-blue-600 text-sm">{connection_count} Connections</p>
             </div>
           </div>
@@ -141,7 +144,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-      {(relation === "connected" || relation === "owner") && relevant_posts && (
+      {(relation === "connected" || relation === "owner" || relation === "unconnected") && relevant_posts && (
         <div className="border rounded-lg p-6 shadow-md bg-white mt-7">
           <div className="flex justify-between items-start">
             <div className="space-y-2 w-full">
