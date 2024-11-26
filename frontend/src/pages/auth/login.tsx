@@ -9,7 +9,7 @@ interface LoginFormValues {
     password: string;
 }
 
-const LoginPage: React.FC = () => {
+const Login = () => {
     const [formData, setFormData] = useState<LoginFormValues>({
         identifier: "",
         password: "",
@@ -138,6 +138,7 @@ const LoginPage: React.FC = () => {
                     <button
                         type="submit"
                         className="w-full mt-6 py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600"
+                        onClick={() => navigate("/")}
                     >
                         Sign In
                     </button>
@@ -156,4 +157,4 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default Login;
