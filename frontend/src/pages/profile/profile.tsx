@@ -1,67 +1,80 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserPlus, UserMinus} from "lucide-react";
+import { UserPlus, UserMinus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/api"; //buat fetch data
+import api from "@/lib/api"; 
+import { Post } from "@/lib/types";
+import toast from "react-hot-toast";
+
+
 
 interface ProfileData {
-    username: string;
+  username: string;
   name: string;
   profile_photo: string;
   work_history: string;
   skills: string;
   connection_count: number;
-  relevant_posts?: string[];
+  relevant_posts?: Post[];
   relation: "unauthorized" | "unconnected" | "connected" | "owner";
 }
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
+  const { user_id } = useParams<{ user_id: string }>();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
-  //   useEffect(() => {
-  //     const fetchProfile = async () => {
-  //       try {
-  //         const response = await api.get(`/profile/${id}`);
-  //         setProfileData(response.data.body);
-  //       } catch (error) {
-  //         navigate("/");
-  //       }
-  //     };
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get(`/profile/${user_id}`);
+        setProfileData(response.data.body);
 
-  //     fetchProfile();
-  //   }, [id, navigate]);
-
-  const fetchDummyProfile = () => {
-    const dummyProfile: ProfileData = {
-        username: "rayhanfa",
-      name: "Rayhan F.A",
-      profile_photo: "",
-      work_history: "Mahasiswa ITB GAJELAS",
-      skills: "belom ada, masi cupu bang",
-      connection_count: 173,
-      relevant_posts: [
-        "Post 1: Bolos matkul adalah kesukaanku",
-        "Post 2: i love ITB",
-      ],
-      relation: "connected",
+      } catch (error) {
+        console.error(error);
+        navigate("/");
+      }
     };
 
-    setTimeout(() => {
-      setProfileData(dummyProfile);
-    }, 200);
-  };
+    fetchProfile();
+  }, [user_id, navigate]);
 
-  useEffect(() => {
-    fetchDummyProfile();
-  }, []);
-
-  if (!profileData) {
-    return;
+  const handleConnect = async () => {
+    await api.post(`/connection/send/${user_id}`)
+    .then(() => {
+      toast.success("Connection request sent");
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error(err.response.data.message);
+    });
   }
 
-  const {username, name, profile_photo, work_history, skills, connection_count, relevant_posts, relation} = profileData;
+  const handleUnconnect = async () => {
+    await api.delete(`/connection/reject/${user_id}`)
+    .then(() => {
+      toast.success("Connection removed");
+    })
+    .catch((err) => {
+      console.error(err);
+      toast.error(err.response.data.message);
+    });
+  }
+
+  if (!profileData) {
+    return null; 
+  }
+
+  const {
+    username,
+    name,
+    profile_photo,
+    work_history,
+    skills,
+    connection_count,
+    relevant_posts,
+    relation,
+  } = profileData;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -83,7 +96,6 @@ const Profile = () => {
           <button
             className="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700"
             onClick={() => navigate(`/profile/edit/`)}
-            // (`/profile/edit/${id}`) nanti routingnya diganti
           >
             Edit Profile
           </button>
@@ -94,16 +106,17 @@ const Profile = () => {
             <div className="space-y-1">
               <h1 className="text-2xl font-semibold mt-1">{username}</h1>
               <p className="text-gray-500 text-sm mt-1">{name}</p>
-              <p className="text-blue-600 text-sm">{connection_count} Connections</p>
+              <p className="text-blue-600 text-sm">
+                {connection_count} Connections
+              </p>
             </div>
           </div>
 
-            {/* Masih kurang logic buat connect dan unconnectnya nya */}
           <div className="flex gap-2 mt-2">
             {relation === "unconnected" && (
               <Button
                 className="bg-blue-600 hover:bg-blue-700"
-                onClick={() => console.log("Send connect request")}
+                onClick={() => handleConnect()}
               >
                 <UserPlus className="mr-2 h-4 w-4" />
                 Connect
@@ -112,7 +125,7 @@ const Profile = () => {
             {relation === "connected" && (
               <Button
                 variant="outline"
-                onClick={() => console.log("Send unconnect request")}
+                onClick={() => handleUnconnect()}
               >
                 <UserMinus className="mr-2 h-4 w-4" />
                 Unconnect
@@ -133,37 +146,40 @@ const Profile = () => {
         </div>
       </div>
 
-        <div className="p-6 bg-white shadow-md rounded-lg mt-7">
-          <div className="flex justify-between items-start">
-            <div className="space-y-2">
-              <h2 className="text-xl font-semibold">Skills</h2>
-              <p className="text-gray-600 leading-relaxed">
-                {skills || "No skills available"}
-                </p>
-            </div>
+      <div className="p-6 bg-white shadow-md rounded-lg mt-7">
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold">Skills</h2>
+            <p className="text-gray-600 leading-relaxed">
+              {skills || "No skills available"}
+            </p>
           </div>
         </div>
+      </div>
 
-      {(relation === "connected" || relation === "owner" || relation === "unconnected") && relevant_posts && (
-        <div className="border rounded-lg p-6 shadow-md bg-white mt-7">
-          <div className="flex justify-between items-start">
-            <div className="space-y-2 w-full">
-              <h2 className="text-xl font-semibold mb-4">Relevant Posts</h2>
-              {relevant_posts.length ? (
-                <ul className="space-y-2">
-                  {relevant_posts.map((post, index) => (
-                    <li key={index} className="p-4 border rounded-md">
-                      {post}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-600">No posts available.</p>
-              )}
+      {(relation === "connected" ||
+        relation === "owner" ||
+        relation === "unconnected") &&
+        relevant_posts && (
+          <div className="border rounded-lg p-6 shadow-md bg-white mt-7">
+            <div className="flex justify-between items-start">
+              <div className="space-y-2 w-full">
+                <h2 className="text-xl font-semibold mb-4">Relevant Posts</h2>
+                {relevant_posts.length ? (
+                  <ul className="space-y-2">
+                    {relevant_posts.map((post) => (
+                      <li key={post.id} className="p-4 border rounded-md">
+                        {post.content}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-600">No posts available.</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

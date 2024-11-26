@@ -138,7 +138,7 @@ const Login = () => {
                     <button
                         type="submit"
                         className="w-full mt-6 py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600"
-                        onClick={() => navigate("/")}
+                        onClick={() => handleSubmit}
                     >
                         Sign In
                     </button>

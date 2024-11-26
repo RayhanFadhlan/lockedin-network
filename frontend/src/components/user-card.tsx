@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, UserPlus } from "lucide-react";
 import { Avatar } from "./ui/avatar";
 import { Profile } from "@/lib/types";
-
+import { Link } from "react-router-dom";
 interface ProfileCardProps extends Profile{
 
   isAuthenticated: boolean;
@@ -31,7 +31,14 @@ export default function ProfileCard({
       <div className="pt-12 p-6">
         <div className="flex flex-col items-center text-center space-y-4">
           <div className="space-y-2">
-            <h2 className="text-md font-semibold pt-2">{name}</h2>
+          <h2 className="text-md font-semibold pt-2">
+              <Link
+                to={`/profile/${id}`}
+                className="hover:underline"
+              >
+                {name}
+              </Link>
+            </h2>
           </div>
 
           <div className="flex items-center gap-2">
