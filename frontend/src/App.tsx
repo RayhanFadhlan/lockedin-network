@@ -25,7 +25,7 @@ function App() {
             <Route path="/connections/:user_id" element={<Connections />} />
             <Route path="/users" element={<UserList/>} />
             <Route path="/profile/:user_id" element={<Profile />} /> {/* nanti ganti routenya pake id  */}
-            <Route path="/profile/edit" element={<EditProfile />} /> {/* nanti ganti routenya pake id  */}
+            <Route path="/profile/edit/:user_id" element={<EditProfile />} /> {/* nanti ganti routenya pake id  */}
           </Routes>
           <Toaster />
         </main>

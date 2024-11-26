@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import api from "@/lib/api"; // buat data
+import api from "@/lib/api";
+import toast from "react-hot-toast";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -69,12 +70,20 @@ const EditProfile = () => {
     formData.append("skills", skills);
     formData.append("work_history", workHistory);
 
-    try {
-      // buat update datanya nanti disini
-      //   navigate(`/profile/${user_id}`);
-    } catch (error) {
-        setError("error");
-    }
+    await api
+      .put(`/profile/${user_id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        toast.success("Profile updated");
+        navigate(`/profile/${user_id}`);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message);
+      });
   };
 
   return (
@@ -91,7 +100,7 @@ const EditProfile = () => {
           <label className="block text-md font-medium text-gray-700 mb-2">
             Profile Photo
           </label>
-         <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex justify-center items-center relative">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 flex justify-center items-center relative">
             {previewPhoto ? (
               <div className="relative">
                 <img
@@ -108,9 +117,7 @@ const EditProfile = () => {
                 </button>
               </div>
             ) : (
-              <span className="text-gray-500">
-                Click to Upload
-              </span>
+              <span className="text-gray-500">Click to Upload</span>
             )}
             <input
               ref={fileInputRef}
@@ -191,8 +198,7 @@ const EditProfile = () => {
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            onClick={() => navigate("/profile")}
-            // nanti diubah pake id juga
+            onClick={() => handleSubmit}
           >
             Save Changes
           </button>

@@ -95,7 +95,7 @@ const Profile = () => {
         {relation === "owner" && (
           <button
             className="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700"
-            onClick={() => navigate(`/profile/edit/`)}
+            onClick={() => navigate(`/profile/edit/${user_id}`)}
           >
             Edit Profile
           </button>
