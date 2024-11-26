@@ -4,48 +4,57 @@ import {
   updateUserDetail,
 } from "../repositories/user.repository.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
-import { isUserConnected } from "../repositories/connection.repository.js";
+import {
+  getConnectionCount,
+  isUserConnected,
+} from "../repositories/connection.repository.js";
 import { getFeedsByUserId } from "../repositories/feed.repository.js";
 import { createFile, deleteFile } from "../lib/storage.js";
 
-export const getProfile = async (
-  userId: string,
-  token: string | undefined
-) => {
+export const getProfile = async (userId: string, token: string | undefined) => {
   const user = await findUserbyId(userId);
   if (!user) {
     throw new HttpError(HttpStatus.BAD_REQUEST, { message: "User not found" });
   }
+  const connectionCount = await getConnectionCount(userId);
   if (!token) {
     return {
       success: true,
       body: {
+        id: Number(user.id),
+        username: user.username,
         name: user.name,
         profile_photo: user.profile_photo,
+        connection_count: connectionCount,
+        work_history: user.work_history,
+        skills: user.skills,
         relation: "unauthorized",
       },
     };
   } else {
     // const token = authHeader.split(" ")[1];
-    const  payload  = await verify(token, process.env.JWT_SECRET as string);
+    const payload = await verify(token, process.env.JWT_SECRET as string);
     const userId2 = payload.userId as string;
 
     const connection = await isUserConnected(userId, userId2);
 
     // Pemilik Profil (Terautentikasi)
+    const feeds = await getFeedsByUserId(userId);
     if (userId === userId2) {
-      const feeds = await getFeedsByUserId(userId);
       return {
         success: true,
         body: {
+          id: Number(user.id),
+          username: user.username,
           name: user.name,
           email: user.email,
           profile_photo: user.profile_photo,
-     
-          job_history: user.work_history,
+          work_history: user.work_history,
           skills: user.skills,
-          relation: "owner",
+          connection_count: connectionCount,
+
           relevant_posts: feeds,
+          relation: "owner",
         },
       };
     }
@@ -54,10 +63,15 @@ export const getProfile = async (
       return {
         success: true,
         body: {
+          id: Number(user.id),
+          username: user.username,
           name: user.name,
           profile_photo: user.profile_photo,
-        
-          job_history: user.work_history,
+          connection_count: connectionCount,
+          work_history: user.work_history,
+          
+          skills: user.skills,
+          relevant_posts: feeds,
           relation: "unconnected",
         },
       };
@@ -68,13 +82,15 @@ export const getProfile = async (
       return {
         success: true,
         body: {
+          id: Number(user.id),
+          username: user.username,
           name: user.name,
           profile_photo: user.profile_photo,
-     
-          job_history: user.work_history,
+          connection_count: connectionCount,
+          work_history: user.work_history,
           skills: user.skills,
-          relation: "connected",
           relevant_posts: feeds,
+          relation: "connected",
         },
       };
     }
@@ -101,12 +117,12 @@ export const updateProfile = async (
   if (user.profile_photo) {
     console.log("delete file");
     const oldPhoto = user.profile_photo;
-    console.log("delete file", oldPhoto); 
+    console.log("delete file", oldPhoto);
     await deleteFile(oldPhoto);
   }
 
   const filePath = await createFile(profilePhoto);
-  
+
   const userDetail = await updateUserDetail(
     userId,
     username,

@@ -101,7 +101,7 @@ profileRouter.openapi(updateProfileRoute, async (c) => {
   const tokenUserId = payload.userId as string;
 
 
-  let {name, work_history, skills, profile_photo} = c.req.valid('form');
+  let {username, name, work_history, skills, profile_photo} = c.req.valid('form');
 
   name = name as string;
 
@@ -113,8 +113,9 @@ profileRouter.openapi(updateProfileRoute, async (c) => {
 
     const response = await updateProfile(
       user_id,
-      name,
+      username,
       profile_photo,
+      name,
       work_history,
       skills,
       tokenUserId,

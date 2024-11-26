@@ -21,3 +21,10 @@ export interface Connection {
   mutual: string;
   isConnected: boolean;
 }
+export interface Post {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  content: string;
+  user_id: number;
+}

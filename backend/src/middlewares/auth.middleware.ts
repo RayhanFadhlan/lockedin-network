@@ -12,6 +12,7 @@ export const authMiddleware = createMiddleware(async (c, next) => {
 
     await jwtMiddleware(c, next);
   } catch (error) {
-    throw new HttpError(HttpStatus.UNAUTHORIZED, { message: 'Invalid JWT token' });
+    
+    throw new HttpError(HttpStatus.UNAUTHORIZED, { message: 'Unauthorized' });
   }
-})
+})  

@@ -87,3 +87,14 @@ export const getConnectionRequestDb = async (userId: string) => {
     created_at: request.created_at.toISOString()
   }));
 }
+
+export const getConnectionCount = async (userId: string) => {
+  const id = parseInt(userId);
+  const connectionCount = await prisma.connection.count({
+    where: {
+      from_id: id
+    }
+  });
+
+  return connectionCount;
+}

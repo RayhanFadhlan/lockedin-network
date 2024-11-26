@@ -111,6 +111,17 @@ async function main() {
       });
     }
   }
+  for (let i = 0; i < 20; i++) {
+    const user = faker.helpers.arrayElement(users);
+    await prisma.feed.create({
+      data: {
+        content: faker.lorem.paragraph(),
+        user_id: user.id,
+        created_at: faker.date.past(),
+      },
+    });
+  }
+
 
   console.log('Seed completed');
 }

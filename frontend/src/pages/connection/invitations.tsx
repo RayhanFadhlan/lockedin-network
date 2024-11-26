@@ -4,23 +4,34 @@ import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { Invitation } from "@/lib/types";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Invitations = () => {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const navigate = useNavigate();
+
+  const fetchInvitations = async () => {
+
+    await api.get("/connection/request")
+    .then((response) => {
+      setInvitations(response.data.body);
+    })
+    .catch((err) => {
+
+      if(err.response.status === 401) {
+        navigate("/login");
+      }
+      console.error(err);
+      toast.error(err.response.data.message);
+    }
+    );
+  };
 
   useEffect(() => {
     fetchInvitations();
   }, []);
 
-  const fetchInvitations = async () => {
-    try {
-      const response = await api.get("/connection/request");
-      setInvitations(response.data.body);
-    } catch (err: unknown) {
-      console.error(err);
-      toast.error("Failed to fetch invitations");
-    }
-  };
+ 
 
   const handleAccept = async (userId: string) => {
     await api.post(`/connection/accept/${userId}`)
@@ -30,7 +41,7 @@ const Invitations = () => {
     })
     .catch((err) => {
       console.error(err);
-      toast.error("Failed to accept connection");
+      toast.error(err.response.data.message);
     });
   };
 
@@ -42,7 +53,7 @@ const Invitations = () => {
     })
     .catch((err) => {
       console.error(err);
-      toast.error("Failed to reject connection");
+      toast.error(err.response.data.message);
     });
   };
 
