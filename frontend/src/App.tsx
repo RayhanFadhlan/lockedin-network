@@ -9,6 +9,7 @@ import Invitations from "./pages/connection/invitations";
 import Connections from "./pages/connection/connections";
 import UserList from "./pages/connection/user-list";
 import Profile from "./pages/profile/profile";
+import EditProfile from "./pages/profile/edit-profile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/connections/:userId" element={<Connections />} />
             <Route path="/users" element={<UserList/>} />
             <Route path="/profile" element={<Profile />} /> {/* nanti ganti routenya pake id  */}
+            <Route path="/profile/edit" element={<EditProfile />} /> {/* nanti ganti routenya pake id  */}
           </Routes>
           <Toaster />
         </main>
