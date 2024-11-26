@@ -12,7 +12,7 @@ interface RegisterFormData {
     confirmPassword: string;
 }
 
-const SignUpPage: React.FC = () => {
+const SignUp: React.FC = () => {
     const [formData, setFormData] = useState<RegisterFormData>({
         username: "",
         email: "",
@@ -248,4 +248,4 @@ const SignUpPage: React.FC = () => {
     );
 };
 
-export default SignUpPage;
+export default SignUp;
