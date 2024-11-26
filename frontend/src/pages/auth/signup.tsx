@@ -68,7 +68,7 @@ const SignUp = () => {
             api.post("/register", formData)
                 .then((res) => {
                     toast.success(res.data.message);
-                    navigate("/login");
+                    navigate("/");
                 })
                 .catch((err) => toast.error(err.response.data.message));
         }
@@ -229,7 +229,7 @@ const SignUp = () => {
                     <button
                         type="submit"
                         className="w-full mt-6 py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600"
-                        onClick={() => navigate("/")}
+                        onClick={() => handleSubmit}
                     >
                         Agree & Join
                     </button>
