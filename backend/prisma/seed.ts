@@ -28,7 +28,7 @@ async function main() {
     },
   });
 
-  
+
   const users = [];
   for (let i = 0; i < 50; i++) {
     const user = await prisma.user.create({
@@ -45,29 +45,39 @@ async function main() {
     users.push(user);
   }
 
- 
+
+  const connectionPairs = new Set<string>();
+
+
   for (const user of users) {
     const otherUsers = users.filter(u => u.id !== user.id);
     const connectUsers = faker.helpers.arrayElements(otherUsers, 20);
     
     for (const connectUser of connectUsers) {
-      const existingConnection = await prisma.connection.findFirst({
-        where: {
-          OR: [
-            { from_id: user.id, to_id: connectUser.id },
-            { from_id: connectUser.id, to_id: user.id },
-          ],
-        },
-      });
+      const pairKey1 = `${user.id}-${connectUser.id}`;
+      const pairKey2 = `${connectUser.id}-${user.id}`;
 
-      if (!existingConnection) {
-        await prisma.connection.create({
-          data: {
-            from_id: user.id,
-            to_id: connectUser.id,
-            created_at: faker.date.past(),
-          },
-        });
+      if (!connectionPairs.has(pairKey1) && !connectionPairs.has(pairKey2)) {
+        const timestamp = faker.date.past();
+        await prisma.$transaction([
+          prisma.connection.create({
+            data: {
+              from_id: user.id,
+              to_id: connectUser.id,
+              created_at: timestamp,
+            },
+          }),
+          prisma.connection.create({
+            data: {
+              from_id: connectUser.id,
+              to_id: user.id,
+              created_at: timestamp,
+            },
+          })
+        ]);
+
+        connectionPairs.add(pairKey1);
+        connectionPairs.add(pairKey2);
       }
     }
   }
@@ -75,20 +85,12 @@ async function main() {
  
   for (const user of users) {
     const otherUsers = users.filter(u => u.id !== user.id);
-    const requestUsers = faker.helpers.arrayElements(
-      otherUsers.filter(async (u) => {
-        const existingConnection = await prisma.connection.findFirst({
-          where: {
-            OR: [
-              { from_id: user.id, to_id: u.id },
-              { from_id: u.id, to_id: user.id },
-            ],
-          },
-        });
-        return !existingConnection;
-      }),
-      15
+    const availableUsers = otherUsers.filter(u => 
+      !connectionPairs.has(`${user.id}-${u.id}`) && 
+      !connectionPairs.has(`${u.id}-${user.id}`)
     );
+    
+    const requestUsers = faker.helpers.arrayElements(availableUsers, 15);
 
     for (const requestUser of requestUsers) {
       await prisma.connectionRequest.create({

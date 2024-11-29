@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UsersIcon } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Invitation } from "@/lib/types";
+import { Link } from "react-router-dom";
 
 
 interface InvitationCardProps {
@@ -13,14 +14,14 @@ interface InvitationCardProps {
 export function InvitationCard({ invitation, onAccept, onReject }: InvitationCardProps) {
   return (
     <div className="p-4 flex sm:flex-row flex-col  items-start sm:items-center border-b-2">
-      <a href={invitation.id} className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
+      <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
         <Avatar alt={invitation.name} src={invitation.profile_photo} className="w-16 h-16" />
-      </a>
+      </div>
       <div className="flex-grow">
         <h3 className="text-md font-semibold">
-          <a href={invitation.id} className="text-black hover:underline">
+          <Link to={`/profile/${invitation.id}`} className="text-black hover:underline">
             {invitation.name}
-          </a>
+          </Link>
         </h3>
         <p className="text-sm text-muted-foreground">
           Created at : {invitation.created_at}

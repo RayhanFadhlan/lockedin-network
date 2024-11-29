@@ -1,7 +1,7 @@
 import  { useState, useEffect } from "react";
 import { ConnectionCard } from "@/components/connection-card";
 import { Connection } from "@/lib/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 
@@ -12,6 +12,8 @@ const Connections = () => {
   const [numberOfConnections, setNumberOfConnections] = useState(0);
   const [isMySelf, setIsMySelf] = useState(true);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchConnections();
@@ -25,7 +27,13 @@ const Connections = () => {
       setIsMySelf(response.data.body.isMySelf);
     })
     .catch((err) => {
-      console.error(err);
+      if(err.response.status === 401) {
+        toast.error("Please login to view connections");
+        navigate("/login");
+      }
+      else {
+        toast.error(err.response.data.message);
+      }
     });
   };
 

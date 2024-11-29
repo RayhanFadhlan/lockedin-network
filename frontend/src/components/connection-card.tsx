@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UsersIcon, Ellipsis, Trash2 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Connection } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -24,22 +25,22 @@ export function ConnectionCard({
   onUnconnect
 }: ConnectionCardProps) {
 
-
+  const navigate = useNavigate();
 
   return (
     <div className="p-4 flex sm:flex-row flex-col items-start sm:items-center border-b-2">
-      <a href={connection.id} className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
+      <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
         <Avatar
           src={connection.profile_photo}
           alt={connection.name}
           className="w-16 h-16"
         />
-      </a>
+      </div>
       <div className="flex-grow">
         <h3 className="text-md font-semibold">
-          <a href={connection.id} className="text-black hover:underline">
+          <button  className="text-black hover:underline" onClick={() => navigate(`/profile/${connection.id}`)}>
             {connection.name}
-          </a>
+          </button>
         </h3>
       
         {connection.mutual && (

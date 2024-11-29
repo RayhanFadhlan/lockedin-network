@@ -1,6 +1,6 @@
 import {
   BellIcon,
-  CircleUserRound,
+  Handshake,
   House,
   Menu,
   MessageSquareText,
@@ -72,9 +72,9 @@ const Navbar: React.FC = () => {
                   to="/messaging"
                 />
                 <NavItem
-                  icon={<BellIcon />}
-                  label="Notifications"
-                  to="/notifications"
+                  icon={<Handshake />}
+                  label="Invitation"
+                  to="/invitation"
                 />
                 {/* <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
                  */}
@@ -121,7 +121,7 @@ const Navbar: React.FC = () => {
               label="Notifications"
               to="/notifications"
             />
-            <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
+            <UserNav />
           </div>
         </div>
       )}

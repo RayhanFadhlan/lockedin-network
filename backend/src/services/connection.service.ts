@@ -229,8 +229,16 @@ export const getConnection = async (
       isMySelf: isMyself,
     };
   } else {
+    const connectionsWithDefaults = connections.map((connection) => ({
+      id: String(connection.to_id),
+      name: connection.to_user.name,
+      profile_photo: connection.to_user.profile_photo,
+      isConnected: false,
+      mutual: "0",
+    }));
+
     return {
-      connections: { ...connections, isConnected: false, mutual: 0 },
+      connections: connectionsWithDefaults,
       connectionCount: connections.length,
       isMySelf: false,
     };

@@ -100,7 +100,7 @@ const Login = () => {
             required
             className={`w-full mt-1 p-2 border ${
               error.identifier ? "border-red-500" : "border-gray-300"
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            } rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue`}
           />
           {error.identifier && (
             <p className="text-red-500 text-sm mt-1">{error.identifier}</p>
@@ -122,7 +122,7 @@ const Login = () => {
               required
               className={`w-full mt-1 p-2 border ${
                 error.password ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              } rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue`}
             />
             <button
               type="button"
@@ -142,7 +142,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full mt-6 py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600"
+            className="w-full mt-6 py-2 px-4 bg-linkedinblue text-white font-medium rounded-md hover:bg-blue-600"
             onClick={() => handleSubmit}
           >
             Sign In

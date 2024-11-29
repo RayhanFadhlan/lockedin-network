@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ const EditProfile = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-md"
       >
-        <h1 className="text-2xl font-semibold text-blue-500 mb-7">
+        <h1 className="text-2xl font-semibold text-linkedinblue mb-7">
           Edit Profile
         </h1>
 
@@ -195,13 +196,13 @@ const EditProfile = () => {
         </div>
 
         <div className="mt-24 sm:mt-6 flex justify-end">
-          <button
+          <Button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="bg-linkedinblue "
             onClick={() => handleSubmit}
           >
             Save Changes
-          </button>
+          </Button>
         </div>
       </form>
     </div>

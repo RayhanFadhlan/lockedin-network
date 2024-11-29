@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { UserPlus, UserMinus } from "lucide-react";
+import { UserPlus, UserMinus, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { Post } from "@/lib/types";
@@ -22,17 +22,17 @@ const Profile = () => {
   const { user_id } = useParams<{ user_id: string }>();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get(`/profile/${user_id}`);
+      setProfileData(response.data.body);
+    } catch (error) {
+      console.error(error);
+      navigate("/");
+    }
+  };
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get(`/profile/${user_id}`);
-        setProfileData(response.data.body);
-      } catch (error) {
-        console.error(error);
-        navigate("/");
-      }
-    };
-
+  
     fetchProfile();
   }, [user_id, navigate]);
 
@@ -50,9 +50,12 @@ const Profile = () => {
 
   const handleUnconnect = async () => {
     await api
-      .delete(`/connection/reject/${user_id}`)
+      .delete(`/connection/${user_id}`)
       .then(() => {
         toast.success("Connection removed");
+      })
+      .then(() => {
+        fetchProfile();
       })
       .catch((err) => {
         console.error(err);
@@ -101,12 +104,15 @@ const Profile = () => {
           </Button>
         )}
 
-        <div className="pt-14 px-11 bg-white h-[200px]">
+        <div className="pt-14 px-11 pb-8 bg-white h-[200px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
               <h1 className="text-2xl font-semibold mt-1">{name}</h1>
               <p className="text-gray-500 text-sm mt-1">{username}</p>
-              <button className="text-[#0a66c2] text-sm font-semibold pt-2 hover:underline" onClick={() => navigate(`/connections/${user_id}`)}>
+              <button
+                className="text-[#0a66c2] text-sm font-semibold pt-2 hover:underline"
+                onClick={() => navigate(`/connections/${user_id}`)}
+              >
                 {connection_count} Connections
               </button>
             </div>
@@ -115,18 +121,29 @@ const Profile = () => {
           <div className="flex gap-2 mt-2">
             {relation === "unconnected" && (
               <Button
-                className="bg-blue-600 hover:bg-blue-700"
+                variant={"default"}
                 onClick={() => handleConnect()}
+                className="text-sm h-8"
               >
-                <UserPlus className="mr-2 h-4 w-4" />
+                <UserPlus className=" h-4 w-4" />
                 Connect
               </Button>
             )}
             {relation === "connected" && (
-              <Button variant="outline" onClick={() => handleUnconnect()}>
-                <UserMinus className="mr-2 h-4 w-4" />
-                Unconnect
-              </Button>
+              <>
+                <Button variant="default" className="text-sm h-8">
+                  <MessageCircle className="h-4 w-4" />
+                  Message
+                </Button>
+                <Button
+                  variant="outline"
+                  className="text-sm h-8"
+                  onClick={() => handleUnconnect()}
+                >
+                  <UserMinus className="h-4 w-4" />
+                  Unconnect
+                </Button>
+              </>
             )}
           </div>
         </div>
