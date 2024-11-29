@@ -10,6 +10,7 @@ import userRouter from "./routes/user.route.js";
 import { cors } from "hono/cors";
 import { connectionRouter } from "./routes/connection.route.js";
 import { serveStatic } from "@hono/node-server/serve-static";
+import feedRouter from "./routes/feed.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import { initSocketServer } from "./services/chat.service.js";
 import { Server as HttpServer } from "node:http";
@@ -43,6 +44,7 @@ app.route("/", authRouter);
 app.route("/", profileRouter);
 app.route("/", userRouter);
 app.route("/", connectionRouter);
+app.route("/", feedRouter);
 app.route("/", notificationRouter);
 
 app.openAPIRegistry.registerComponent("securitySchemes", "auth", {

@@ -1,29 +1,74 @@
 import { createRoute } from "@hono/zod-openapi";
+
+import {
+  ContentRequestSchema,
+  GetFeedQuerySchema,
+  GetFeedResponseSchema,
+  PostIdParamsSchema,
+  PostSchema
+} from "../schemas/feed.schema.js";
+import { ErrorSchema, SuccessSchema } from "../schemas/default.schema.js";
+
 import { createHono } from "../lib/HonoWrapper.js";
-import { CreateFeedSchema } from "../schemas/feed.schema.js";
-import { SuccessSchema } from "../schemas/default.schema.js";
+import { getProfile, updateProfile } from "../services/profile.service.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { HttpError, HttpStatus } from "../lib/errors.js";
 import { getCookie } from "hono/cookie";
-import { createFeed } from "../services/feed.service.js";
-import { prisma } from "../lib/prisma.js";
-import webpush from "web-push";
+import { getConnectedFeeds, updateFeeds } from "../repositories/feed.repository.js";
+import { createFeed, deleteFeed, getFeeds, updateFeed } from "../services/feed.service.js";
 
 const feedRouter = createHono();
 
-interface SubscriptionKeys {
-  p256dh: string;
-  auth: string;
-}
 
-const creteFeedRoute = createRoute({
-  method: "post",
+const getFeedRoute = createRoute({
+  method: "get",
   path: "/feed",
   middleware: [authMiddleware] as const,
   request: {
+    query: GetFeedQuerySchema
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessSchema,
+        },
+      },
+      description: "Feeds fetched successfully",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema,
+        },
+      },
+      description: "Feeds fetch failed",
+    },
+  },
+});
+
+feedRouter.openapi(getFeedRoute, async (c) => {
+  const { cursor, limit } = c.req.valid('query');
+  const payload =  c.get('jwtPayload');
+  const tokenUserId = payload.userId as string;
+  const response = await getFeeds(tokenUserId);
+
+  return c.json(
+    response, 
+    200
+  );
+});
+
+const createFeedRoute = createRoute({
+  method: "post",
+  path: "/feed/{post_id}",
+  middleware: [authMiddleware] as const,
+  request: {
+    params : PostIdParamsSchema,
     body: {
       content: {
         "application/json": {
-          schema: CreateFeedSchema,
+          schema: ContentRequestSchema,
         },
       },
     },
@@ -35,52 +80,121 @@ const creteFeedRoute = createRoute({
           schema: SuccessSchema,
         },
       },
-      description: "Feed created successfully",
+      description: "Profile updated successfully",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema,
+        },
+      },
+      description: "Profile update failed",
     },
   },
 });
 
-feedRouter.openapi(creteFeedRoute, async (c) => {
-  const { content } = c.req.valid("json");
-  const payload = c.get("jwtPayload");
-  const userId = payload.userId;
-  const response = await createFeed(userId, content);
+feedRouter.openapi(createFeedRoute, async (c) => {
+  const { post_id } = c.req.valid('param');
+  const { content } = c.req.valid('json');
 
-  const subscriptions = await prisma.pushSubscription.findMany();
-
-  const notificationPayload = JSON.stringify({
-    title: "New Feed",
-    body: "content",
-  });
-
-  await Promise.all(
-    subscriptions.map(async (subscription) => {
-      try {
-        
-        const keys = JSON.parse(subscription.keys as string);
-
-        await webpush.sendNotification(
-          {
-            endpoint: subscription.endpoint,
-            keys: {
-              auth: keys.auth,
-              p256dh: keys.p256dh,
-            },
-          },
-          notificationPayload
-        );
-      } catch (error: unknown) {
-        console.error("Failed to send notification:", error);
-      }
-    })
+  const response = await createFeed(
+      post_id,
+      content
   );
 
   return c.json(
-    {
-      success: true,
-      message: "Feed created successfully",
-      body: response,
-    },
+    response,
     200
   );
 });
+
+const updateFeedRoute = createRoute({
+  method: "put",
+  path: "/feed/{post_id}",
+  middleware: [authMiddleware] as const,
+  request: {
+    params : PostIdParamsSchema,
+    body: {
+      content: {
+        "application/json": {
+          schema: ContentRequestSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessSchema,
+        },
+      },
+      description: "Profile updated successfully",
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema,
+        },
+      },
+      description: "Profile update failed",
+    },
+  },
+});
+
+feedRouter.openapi(updateFeedRoute, async (c) => {
+  const { post_id } = c.req.valid('param');
+  const { content } = c.req.valid('json');
+
+  const response = await updateFeed(
+      post_id,
+      content
+  );
+
+  return c.json(
+    response,
+    200
+  );
+});
+
+const deleteFeedRoute = createRoute({
+  method: "delete",
+  path: "/feed/{post_id}",
+  middleware: [authMiddleware] as const,
+  request: {
+    params : PostIdParamsSchema
+  },
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessSchema,
+        },
+      },
+      description: 'Feed deleted successfully.',
+    },
+    400: {
+      content: {
+        "application/json": {
+          schema: ErrorSchema,
+        },
+      },
+      description: 'Feed delete failed.',
+    },
+  },
+});
+
+feedRouter.openapi(deleteFeedRoute, async (c) => {
+  const { post_id } = c.req.valid('param');
+
+  const response = await deleteFeed(
+      post_id
+  );
+
+  return c.json(
+    response,
+    200
+  );
+});
+
+export default feedRouter;
