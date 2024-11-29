@@ -1,5 +1,5 @@
 
-HOW TO RUN : <br>
+HOW TO RUN (BETTER DEVELOPMENT JGN PAKE DOCKER): <br>
 ```
 docker compose build
 docker compose watch
