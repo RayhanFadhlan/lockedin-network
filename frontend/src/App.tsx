@@ -43,13 +43,11 @@ function App() {
               <Route path="/invitation" element={<Invitations />} />
               <Route path="/connections/:user_id" element={<Connections />} />
               <Route path="/users" element={<UserList />} />
-              <Route path="/profile/:user_id" element={<Profile />} />{" "}
-              {/* nanti ganti routenya pake id  */}
+              <Route path="/profile/:user_id" element={<Profile />} />
               <Route
                 path="/profile/edit/:user_id"
                 element={<EditProfile />}
-              />{" "}
-              {/* nanti ganti routenya pake id  */}
+              />
             </Routes>
             <Toaster />
           </main>
