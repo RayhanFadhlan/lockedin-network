@@ -1,28 +1,29 @@
 import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
-import { OpenAPIHono, createRoute } from "@hono/zod-openapi";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { HttpError } from "./lib/errors.js";
 import authRouter from "./routes/auth.route.js";
-import { Hono } from "hono";
 import { logger } from "hono/logger";
 import profileRouter from "./routes/profile.route.js";
 import { HTTPException } from "hono/http-exception";
-import { apiReference } from "@scalar/hono-api-reference";
 import userRouter from "./routes/user.route.js";
 import { cors } from "hono/cors";
 import { connectionRouter } from "./routes/connection.route.js";
 import { serveStatic } from "@hono/node-server/serve-static";
+import feedRouter from "./routes/feed.route.js";
+import notificationRouter from "./routes/notification.route.js";
 import { initSocketServer } from "./services/chat.service.js";
 import { Server as HttpServer } from "node:http";
-import { Server } from "socket.io";
+
+
 const main = new OpenAPIHono();
 
 const app = main.basePath("/api");
 
-main.use(
-  "/uploads/*",
-  serveStatic({root: "./"})
-);
+
+
+
+main.use("/uploads/*", serveStatic({ root: "./" }));
 
 app.use(logger());
 app.use(
@@ -32,10 +33,19 @@ app.use(
     exposeHeaders: ["Location"],
   })
 );
+
+app.get("/tes", (c) => {
+  return c.json({ message: BigInt(12345678901234567890) });
+});
+
+
+
 app.route("/", authRouter);
 app.route("/", profileRouter);
 app.route("/", userRouter);
 app.route("/", connectionRouter);
+app.route("/", feedRouter);
+app.route("/", notificationRouter);
 
 app.openAPIRegistry.registerComponent("securitySchemes", "auth", {
   type: "http",
@@ -84,10 +94,12 @@ app.get("/docs", swaggerUI({ url: "/api/openapi" }));
 const port = 3000;
 console.log(`Server is running on port ${port}`);
 
-export const server = serve({
+
+export const httpServer = serve({
   fetch: app.fetch,
   port,
 });
 
-initSocketServer(server as HttpServer);
+
+initSocketServer(httpServer as HttpServer);
 

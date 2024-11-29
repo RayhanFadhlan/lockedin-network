@@ -8,7 +8,7 @@ const api = axios.create({
   withCredentials: true,
 })
 
-// make response interceptors that redirect to login if there is 401 error
+
 
 api.interceptors.response.use(
   (response) => {
