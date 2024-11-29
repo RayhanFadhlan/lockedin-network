@@ -10,8 +10,27 @@ import Connections from "./pages/connection/connections";
 import UserList from "./pages/connection/user-list";
 import Profile from "./pages/profile/profile";
 import EditProfile from "./pages/profile/edit-profile";
+import { useEffect } from "react";
+import { toast } from "react-hot-toast";
+
 
 function App() {
+  useEffect(() => {
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data.type === 'NOTIFICATION') {
+        console.log(event.data.body);
+        toast(event.data.body, {
+          icon: '🔔',
+          duration: 4000,
+          position: 'top-right',
+          style: {
+            padding: '16px',
+          },
+     
+        });
+      }
+    });
+  }, []);
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
