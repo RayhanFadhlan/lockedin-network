@@ -12,45 +12,51 @@ import Profile from "./pages/profile/profile";
 import EditProfile from "./pages/profile/edit-profile";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-
+import { AuthProvider } from "./hooks/authProvider";
 
 function App() {
   useEffect(() => {
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      if (event.data.type === 'NOTIFICATION') {
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data.type === "NOTIFICATION") {
         console.log(event.data.body);
         toast(event.data.body, {
-          icon: '🔔',
+          icon: "🔔",
           duration: 4000,
-          position: 'top-right',
+          position: "top-right",
           style: {
-            padding: '16px',
+            padding: "16px",
           },
-     
         });
       }
     });
   }, []);
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="container mx-auto px-4 flex-grow mt-[130px]">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<SignUp/>} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/invitation" element={<Invitations />} />
-            <Route path="/connections/:user_id" element={<Connections />} />
-            <Route path="/users" element={<UserList/>} />
-            <Route path="/profile/:user_id" element={<Profile />} /> {/* nanti ganti routenya pake id  */}
-            <Route path="/profile/edit/:user_id" element={<EditProfile />} /> {/* nanti ganti routenya pake id  */}
-          </Routes>
-          <Toaster />
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="container mx-auto px-4 flex-grow mt-[130px]">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/invitation" element={<Invitations />} />
+              <Route path="/connections/:user_id" element={<Connections />} />
+              <Route path="/users" element={<UserList />} />
+              <Route path="/profile/:user_id" element={<Profile />} />{" "}
+              {/* nanti ganti routenya pake id  */}
+              <Route
+                path="/profile/edit/:user_id"
+                element={<EditProfile />}
+              />{" "}
+              {/* nanti ganti routenya pake id  */}
+            </Routes>
+            <Toaster />
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
