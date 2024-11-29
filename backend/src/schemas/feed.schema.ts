@@ -9,6 +9,7 @@ export const PostSchema = z.object({
   user_id : z.number(),
 });
 
+
 export const ContentRequestSchema = z.object({
   content : z.string()
 })

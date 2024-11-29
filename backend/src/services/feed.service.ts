@@ -66,4 +66,5 @@ export const deleteFeed = async (postId: string) => {
       error: error
     }
   }
+
 }
