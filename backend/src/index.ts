@@ -12,7 +12,9 @@ import userRouter from "./routes/user.route.js";
 import { cors } from "hono/cors";
 import { connectionRouter } from "./routes/connection.route.js";
 import { serveStatic } from "@hono/node-server/serve-static";
-
+import { initSocketServer } from "./services/chat.service.js";
+import { Server as HttpServer } from "node:http";
+import { Server } from "socket.io";
 const main = new OpenAPIHono();
 
 const app = main.basePath("/api");
@@ -82,7 +84,10 @@ app.get("/docs", swaggerUI({ url: "/api/openapi" }));
 const port = 3000;
 console.log(`Server is running on port ${port}`);
 
-serve({
+export const server = serve({
   fetch: app.fetch,
   port,
 });
+
+initSocketServer(server as HttpServer);
+

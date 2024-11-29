@@ -1,27 +1,31 @@
 import { Server as Server, Socket } from "socket.io";
-import http from "http";
+import type { Server as HTTPServer } from "node:http";
 import {
   getChatHistory,
   sendMessage,
 } from "../repositories/chat.repository.js";
 
-export const initSocketServer = (server: http.Server) => {
+export const initSocketServer = (server: HTTPServer) => {
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:5173",
-      methods: ["GET", "POST"],
+      credentials: true,
     },
+    transports: ["websocket"],
   });
+
+  io.use((socket: Socket, next) => {
+    const userId = socket.handshake.auth.userId;
+    if (!userId) {
+      return next(new Error("User ID is required"));
+    }
+    return next();
+  }
+  );
 
   io.on("connection", (socket: Socket) => {
     console.log(`User connected: ${socket.id}`);
-
-    const userId = socket.handshake.query.userId;
-    if (!userId) {
-      console.error("User ID is required");
-      socket.emit("error", "User ID is required");
-      return;
-    }
+    const userId = socket.handshake.auth.userId;
 
     const userRoom = `room-${userId}`;
     socket.join(userRoom);
