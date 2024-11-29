@@ -40,6 +40,7 @@ chatRouter.openapi(getConnectionsWithLastMessageRoute, async (c) => {
       {
         success: true,
         message: "Connections with last messages fetched successfully",
+        loggedInUserId: userId,
         body: response,
       },
       200
