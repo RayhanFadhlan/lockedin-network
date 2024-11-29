@@ -2,8 +2,11 @@ import { Server as Server, Socket } from "socket.io";
 import type { Server as HTTPServer } from "node:http";
 import {
   getChatHistory,
-  sendMessage,
+  sendMessage, getLastChatMessage,
+  getAllConnections
 } from "../repositories/chat.repository.js";
+import { HttpError, HttpStatus } from "../lib/errors.js";
+
 
 export const initSocketServer = (server: HTTPServer) => {
   const io = new Server(server, {
@@ -59,3 +62,34 @@ export const initSocketServer = (server: HTTPServer) => {
     });
   });
 };
+
+
+export const getConnectionsWithLastMessage = async (userId: string) => {
+    const connections = await getAllConnections(userId);
+  
+    if (!connections.length) {
+      throw new HttpError(HttpStatus.NOT_FOUND, {
+        message: "No connections found for this user.",
+      });
+    }
+  
+    const connectionsWithLastMessages = await Promise.all(
+      connections.map(async (connection) => {
+        const otherUser =
+          connection.from_id.toString() === userId ? connection.to_user : connection.from_user;
+  
+        const lastChat = await getLastChatMessage(userId, otherUser.id.toString());
+  
+        return {
+          userId: otherUser.id,
+          name: otherUser.name,
+          profile_photo: otherUser.profile_photo,
+          lastMessage: lastChat?.message || null,
+          lastMessageTime: lastChat?.timestamp?.toISOString() || null,
+          lastMessageSenderId: lastChat?.from_id || null,
+        };
+      })
+    );
+  
+    return connectionsWithLastMessages;
+  };
