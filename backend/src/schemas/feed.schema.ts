@@ -9,4 +9,8 @@ export const PostSchema = z.object({
   user_id : z.number(),
 });
 
+export const CreateFeedSchema = z.object({
+  content : z.string().min(3).max(280),
+});
+
 export type Post = z.infer<typeof PostSchema>;

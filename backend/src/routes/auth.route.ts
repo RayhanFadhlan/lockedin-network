@@ -10,6 +10,9 @@ import { createHono } from "../lib/HonoWrapper.js";
 import { getCookie } from "hono/cookie";
 import { jwt, verify } from "hono/jwt";
 import { HttpError } from "../lib/errors.js";
+import { prisma } from "../lib/prisma.js";
+import webpush from "web-push";
+
 
 const authRouter = createHono();
 
@@ -134,6 +137,39 @@ authRouter.openapi(selfRoute, async (c) => {
     throw new HttpError(401, { message: "No token provided" });
   }
   const decoded = await verify(token, secret);
+
+  // const subscriptions = await prisma.pushSubscription.findMany();
+
+  // const notificationPayload = JSON.stringify({
+  //   title: "New Feed",
+  //   body: "content",
+  // });
+
+  // await Promise.all(
+  //   subscriptions.map(async (subscription) => {
+  //     try {
+     
+       
+
+  //       await webpush.sendNotification(
+  //         {
+  //           endpoint: subscription.endpoint,
+  //           keys: {
+  //             // @ts-ignore
+  //             auth: subscription.keys.auth,
+  //             // @ts-ignore
+  //             p256dh: subscription.keys.p256dh,
+  //           },
+  //         },
+  //         notificationPayload
+  //       );
+  //     } catch (error: unknown) {
+  //       console.error("Failed to send notification:", error);
+  //     }
+  //   })
+  // );
+  // console.log("Successfully sent notification");
+
   return c.json(
     {
       success: true,
