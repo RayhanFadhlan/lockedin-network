@@ -68,8 +68,9 @@ const Login = () => {
         .then(() => {
           api.get("/self").then((res) => {
             login({
-              id: res.data.body.id,
+              userId: res.data.body.userId,
               name: res.data.body.name,
+              email: res.data.body.email,
             });
           });
         })

@@ -2,11 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserPlus, UserMinus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import api from "@/lib/api"; 
+import api from "@/lib/api";
 import { Post } from "@/lib/types";
 import toast from "react-hot-toast";
-
-
 
 interface ProfileData {
   username: string;
@@ -29,7 +27,6 @@ const Profile = () => {
       try {
         const response = await api.get(`/profile/${user_id}`);
         setProfileData(response.data.body);
-
       } catch (error) {
         console.error(error);
         navigate("/");
@@ -40,29 +37,31 @@ const Profile = () => {
   }, [user_id, navigate]);
 
   const handleConnect = async () => {
-    await api.post(`/connection/send/${user_id}`)
-    .then(() => {
-      toast.success("Connection request sent");
-    })
-    .catch((err) => {
-      console.error(err);
-      toast.error(err.response.data.message);
-    });
-  }
+    await api
+      .post(`/connection/send/${user_id}`)
+      .then(() => {
+        toast.success("Connection request sent");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message);
+      });
+  };
 
   const handleUnconnect = async () => {
-    await api.delete(`/connection/reject/${user_id}`)
-    .then(() => {
-      toast.success("Connection removed");
-    })
-    .catch((err) => {
-      console.error(err);
-      toast.error(err.response.data.message);
-    });
-  }
+    await api
+      .delete(`/connection/reject/${user_id}`)
+      .then(() => {
+        toast.success("Connection removed");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message);
+      });
+  };
 
   if (!profileData) {
-    return null; 
+    return null;
   }
 
   const {
@@ -93,22 +92,23 @@ const Profile = () => {
         </div>
 
         {relation === "owner" && (
-          <button
-            className="absolute top-6 right-6 flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700"
+          <Button
+            variant={"default"}
+            className="absolute top-6 right-6"
             onClick={() => navigate(`/profile/edit/${user_id}`)}
           >
-            Edit Profile
-          </button>
+            Edit profile
+          </Button>
         )}
 
         <div className="pt-14 px-11 bg-white h-[200px]">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold mt-1">{username}</h1>
-              <p className="text-gray-500 text-sm mt-1">{name}</p>
-              <p className="text-blue-600 text-sm">
+              <h1 className="text-2xl font-semibold mt-1">{name}</h1>
+              <p className="text-gray-500 text-sm mt-1">{username}</p>
+              <button className="text-[#0a66c2] text-sm font-semibold pt-2 hover:underline" onClick={() => navigate(`/connections/${user_id}`)}>
                 {connection_count} Connections
-              </p>
+              </button>
             </div>
           </div>
 
@@ -123,10 +123,7 @@ const Profile = () => {
               </Button>
             )}
             {relation === "connected" && (
-              <Button
-                variant="outline"
-                onClick={() => handleUnconnect()}
-              >
+              <Button variant="outline" onClick={() => handleUnconnect()}>
                 <UserMinus className="mr-2 h-4 w-4" />
                 Unconnect
               </Button>

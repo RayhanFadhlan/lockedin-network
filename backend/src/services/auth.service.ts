@@ -60,6 +60,7 @@ export const login = async (identifier: string, password: string) => {
   const payload = {
     userId: user.id.toString(),
     email: user.email,
+    name: user.name,
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + 3600,
   };

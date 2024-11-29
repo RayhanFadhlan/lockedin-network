@@ -1,8 +1,10 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import api from '@/lib/api';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
-  user: { id: string; name: string } | null;
-  login: (user: { id: string; name: string }) => void;
+  user: { userId: string; name: string, email: string } | null;
+  login: (user: { userId: string; name: string , email: string}) => void;
   logout: () => void;
   isLoggedIn: boolean;
 }
@@ -10,14 +12,30 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<{ id: string; name: string } | null>(null);
+  const navigate = useNavigate();
+ 
+  const [user, setUser] = useState<{ userId: string; name: string; email: string } | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  const login = (user: { id: string; name: string }) => {
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
+
+  const login = (user: { userId: string; name: string, email: string }) => {
     setUser(user);
   };
 
   const logout = () => {
     setUser(null);
+    api.get('/logout');
+    navigate('/');
+   
   };
 
   const isLoggedIn = user !== null;
