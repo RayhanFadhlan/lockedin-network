@@ -9,7 +9,7 @@ interface ProfileCardProps extends Profile {
   isAuthenticated: boolean;
 }
 
-export default function ProfileCard({
+export default function   ProfileCard({
   id,
   name,
   profile_photo,

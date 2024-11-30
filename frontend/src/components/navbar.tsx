@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/authProvider";
+import { useAuth } from "@/contexts/authProvider";
 import { Button } from "./ui/button";
 import { UserNav } from "./user-nav";
 // import Cookies from "js-cookie";
@@ -78,7 +78,7 @@ const Navbar: React.FC = () => {
                 />
                 {/* <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
                  */}
-                 <UserNav />
+                <UserNav />
               </>
             ) : (
               <>
