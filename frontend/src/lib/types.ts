@@ -28,3 +28,5 @@ export interface Post {
   content: string;
   user_id: number;
 }
+
+export type Feed = Post & { user: { name: string; profile_photo: string } };

@@ -19,6 +19,7 @@ const authRouter = createHono();
 const registerRoute = createRoute({
   method: "post",
   path: "/register",
+  tags: ["Auth"],
   request: {
     body: {
       content: {
@@ -68,6 +69,7 @@ authRouter.openapi(registerRoute, async (c) => {
 const loginRoute = createRoute({
   method: "post",
   path: "/login",
+  tags: ["Auth"],
   request: {
     body: {
       content: {
@@ -117,6 +119,7 @@ authRouter.openapi(loginRoute, async (c) => {
 const selfRoute = createRoute({
   method: "get",
   path: "/self",
+  tags: ["Auth"],
   responses: {
     200: {
       content: {
@@ -188,6 +191,7 @@ authRouter.openapi(selfRoute, async (c) => {
 const logoutRoute = createRoute({
   method: "get",
   path: "/logout",
+  tags: ["Auth"],
   responses: {
     200: {
       content: {

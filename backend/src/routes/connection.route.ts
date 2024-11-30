@@ -9,6 +9,7 @@ export const connectionRouter = createHono();
 
 const getConnectionRequestRoute = createRoute({
   method: "get",
+  tags: ["Connection"],
   path: "/connection/request",
   middleware: [authMiddleware] as const,
   responses: {
@@ -42,6 +43,7 @@ connectionRouter.openapi(getConnectionRequestRoute, async (c) => {
 
 const sendConnectionRequestRoute = createRoute({
   method: "post",
+  tags: ["Connection"],
   path: "/connection/send/{user_id}",
   request: {
     params: UserIdParamsSchema,
@@ -79,6 +81,7 @@ connectionRouter.openapi(sendConnectionRequestRoute, async (c) => {
 
 const rejectConnectionRequestRoute = createRoute({
   method: "delete",
+  tags: ["Connection"],
   path: "/connection/reject/{user_id}",
   request: {
     params: UserIdParamsSchema,
@@ -98,6 +101,7 @@ const rejectConnectionRequestRoute = createRoute({
 
 const acceptConnectionRequestRoute = createRoute({
   method: "post",
+  tags: ["Connection"],
   path: "/connection/accept/{user_id}",
   request: {
     params: UserIdParamsSchema,
@@ -153,6 +157,7 @@ connectionRouter.openapi(acceptConnectionRequestRoute, async (c) => {
 
 const getConnectionRoute = createRoute({
   method: "get",
+  tags: ["Connection"],
   path: "/connection/{user_id}",
   request: {
     params: UserIdParamsSchema,
@@ -188,6 +193,7 @@ connectionRouter.openapi(getConnectionRoute, async (c) => {
 
 const unconnectRoute = createRoute({
   method: "delete",
+  tags: ["Connection"],
   path: "/connection/{user_id}",
   request: {
     params: UserIdParamsSchema,

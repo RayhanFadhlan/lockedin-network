@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar } from "@/components/ui/avatar";
 import { ReactNode, useState } from "react";
 import { useAuth } from "@/contexts/authProvider";
+import { useFeed } from "@/contexts/feedProvider";
 
 interface FeedDialogProps {
   trigger: ReactNode;
@@ -21,15 +22,28 @@ interface FeedDialogProps {
 export function FeedDialog({
   trigger,
   isCreate,
+  postId,
   initialContent,
 }: FeedDialogProps) {
   const { user } = useAuth();
   const name = user?.name;
   const profile_photo = "/profile.svg";
   const [content, setContent] = useState(initialContent);
+  const [open, setOpen] = useState(false);
+  const{ createFeed, updateFeed } = useFeed();
+
+  const handleSubmit = async () => {
+    if (isCreate) {
+       createFeed(content!);
+    } else {
+      updateFeed({ id: postId!, content: content! });
+    }
+    setOpen(false);
+    setContent("");
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
@@ -54,7 +68,7 @@ export function FeedDialog({
           className="min-h-[200px] resize-none"
         />
         <div className="flex justify-end">
-          <Button>Post</Button>
+          <Button onClick={() => handleSubmit()}>Post</Button>
         </div>
       </DialogContent>
     </Dialog>

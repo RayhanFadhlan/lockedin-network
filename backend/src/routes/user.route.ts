@@ -9,6 +9,7 @@ const userRouter = createHono();
 
 const getUsersRoute = createRoute({
   method: "get",
+  tags: ["User"],
   path: "/users",
   request: {
     query: UserSearchQuerySchema

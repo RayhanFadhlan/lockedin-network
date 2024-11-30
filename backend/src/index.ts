@@ -65,11 +65,12 @@ app.onError((err, c) => {
       err.status
     );
   } else {
+    console.log(err);
     return c.json(
       {
         success: false,
         message: "Internal server error",
-        error: err.message,
+        error: null,
       },
       500
     );

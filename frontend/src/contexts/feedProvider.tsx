@@ -1,37 +1,64 @@
-import { createContext, useContext, ReactNode, useState } from "react";
-import { Post } from "@/lib/types";
+import { createContext, useContext, ReactNode } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/lib/api";
+import toast from "react-hot-toast";
 
-interface Feed {
-  post: Post & { name: string; profile_photo: string };
-}
+
 
 interface FeedContextType {
-  feeds: Feed[];
-  setFeeds: (feeds: Feed[]) => void;
-  createFeed: (content: string) => Promise<void>;
-  updateFeed: (id: number, content: string) => Promise<void>;
-  deleteFeed: (id: number) => Promise<void>;
+  createFeed: (content: string) => void;
+  updateFeed: (params: { id: number; content: string }) => void;
+  deleteFeed: (id: number) => void;
 }
 
 const FeedContext = createContext<FeedContextType | undefined>(undefined);
 
 export function FeedProvider({ children }: { children: ReactNode }) {
-  const [feeds, setFeeds] = useState<Feed[]>([]);
+  const queryClient = useQueryClient();
 
-  const createFeed = async (content: string) => {
-    
-  };
+  const createFeedMutation = useMutation({
+    mutationFn: (content: string) => 
+      api.post("/feed", { content }).then(res => res.data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      toast.success(data.message);
+    },
+    onError: () => {
+      toast.error("Failed to create feed");
+    }
+  });
 
-  const updateFeed = async (id: number, content: string) => {
-  };
+  const updateFeedMutation = useMutation({
+    mutationFn: ({ id, content }: { id: number; content: string }) =>
+      api.put(`/feed/${id}`, { content }).then(res => res.data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      toast.success(data.message);
+    },
+    onError: () => {
+      toast.error("Failed to update feed");
+    }
+  });
 
-  const deleteFeed = async (id: number) => {
-    
-  };
+  const deleteFeedMutation = useMutation({
+    mutationFn: (id: number) => 
+      api.delete(`/feed/${id}`).then(res => res.data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      toast.success(data.message);
+    },
+    onError: () => {
+      toast.error("Failed to delete feed");
+    }
+  });
 
   return (
     <FeedContext.Provider
-      value={{ feeds, setFeeds, createFeed, updateFeed, deleteFeed }}
+      value={{
+        createFeed: createFeedMutation.mutate,
+        updateFeed: updateFeedMutation.mutate,
+        deleteFeed: deleteFeedMutation.mutate,
+      }}
     >
       {children}
     </FeedContext.Provider>

@@ -2,20 +2,23 @@ import { Post } from "@/lib/types";
 import { Avatar } from "./ui/avatar";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import { useAuth } from "@/contexts/authProvider";
+// import { useAuth } from "@/contexts/authProvider";
 import { FeedDropdown } from "./feed-dropdown";
+import { useAuth } from "@/contexts/authProvider";
 
 interface FeedCardProps {
   post: Post & {
-    name: string;
-    profile_photo: string;
+    user: {
+      name: string;
+      profile_photo: string;
+    };
   };
 }
 
 export function FeedCard({ post }: FeedCardProps) {
-  // const { user } = useAuth();
-  // const isMyPost = user?.userId === post.user_id.toString();
-  const isMyPost = true;
+  const { user } = useAuth();
+  const isMyPost = user?.userId === post.user_id.toString();
+  
 
   return (
     <div className="!my-2 artdecoCard p-4 sm:p-4 gap-4 flex flex-col">
@@ -24,7 +27,7 @@ export function FeedCard({ post }: FeedCardProps) {
           <div className="flex items-start space-x-3">
             <Avatar
               src="/profile.svg"
-              alt={post.name}
+              alt={post.user.name}
               className="w-12 h-12 rounded-full"
             />
             <div className="flex-grow">
@@ -33,7 +36,7 @@ export function FeedCard({ post }: FeedCardProps) {
                   to={`/profile/${post.user_id}`}
                   className="text-black hover:underline text-sm"
                 >
-                  {post.name}
+                  {post.user.name}
                 </Link>
               </h3>
               <p className="text-xs text-muted-foreground">
@@ -43,9 +46,7 @@ export function FeedCard({ post }: FeedCardProps) {
               </p>
             </div>
           </div>
-          {isMyPost && (
-            <FeedDropdown postId={post.id} content={post.content} />
-          )}
+          {isMyPost && <FeedDropdown postId={post.id} content={post.content} />}
         </div>
       </div>
       <div className="">

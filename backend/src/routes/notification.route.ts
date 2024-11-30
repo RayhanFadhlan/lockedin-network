@@ -20,6 +20,7 @@ webpush.setVapidDetails(
 );
 
 const subscribeRoute = createRoute({
+  tags: ["Notification"],
   method: "post",
   path: "/subscribe",
   middleware: [authMiddleware] as const,

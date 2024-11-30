@@ -58,6 +58,7 @@ export const updateUserDetail = async (
       name: name,
       work_history: workHistory,
       skills: skills,
+      updated_at: new Date(),
     },
     select: {
       id: true,

@@ -18,6 +18,7 @@ const profileRouter = createHono();
 
 const getProfileRoute = createRoute({
   method: "get",
+  tags: ["Profile"],
   path: "/profile/{user_id}",
   request: {
     params: UserIdParamsSchema
@@ -44,6 +45,7 @@ const getProfileRoute = createRoute({
 
 const updateProfileRoute = createRoute({
   method: "put",
+  tags: ["Profile"],
   path: "/profile/{user_id}",
   middleware: [authMiddleware] as const,
   request: {

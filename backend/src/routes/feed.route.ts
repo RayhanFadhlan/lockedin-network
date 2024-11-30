@@ -22,6 +22,7 @@ const feedRouter = createHono();
 
 const getFeedRoute = createRoute({
   method: "get",
+  tags: ["Feed"],
   path: "/feed",
   middleware: [authMiddleware] as const,
   request: {
@@ -51,7 +52,7 @@ feedRouter.openapi(getFeedRoute, async (c) => {
   const { cursor, limit } = c.req.valid('query');
   const payload =  c.get('jwtPayload');
   const tokenUserId = payload.userId as string;
-  const response = await getFeeds(tokenUserId);
+  const response = await getFeeds(tokenUserId, cursor, limit);
 
   return c.json(
     response, 
@@ -61,10 +62,10 @@ feedRouter.openapi(getFeedRoute, async (c) => {
 
 const createFeedRoute = createRoute({
   method: "post",
-  path: "/feed/{post_id}",
+  tags: ["Feed"],
+  path: "/feed",
   middleware: [authMiddleware] as const,
   request: {
-    params : PostIdParamsSchema,
     body: {
       content: {
         "application/json": {
@@ -94,11 +95,11 @@ const createFeedRoute = createRoute({
 });
 
 feedRouter.openapi(createFeedRoute, async (c) => {
-  const { post_id } = c.req.valid('param');
   const { content } = c.req.valid('json');
-
+  const payload = c.get('jwtPayload');
+  const userId = payload.userId;
   const response = await createFeed(
-      post_id,
+      userId,
       content
   );
 
@@ -110,6 +111,7 @@ feedRouter.openapi(createFeedRoute, async (c) => {
 
 const updateFeedRoute = createRoute({
   method: "put",
+  tags: ["Feed"],
   path: "/feed/{post_id}",
   middleware: [authMiddleware] as const,
   request: {
@@ -146,9 +148,12 @@ feedRouter.openapi(updateFeedRoute, async (c) => {
   const { post_id } = c.req.valid('param');
   const { content } = c.req.valid('json');
 
+  const payload = c.get('jwtPayload');
+  const userId = payload.userId;
   const response = await updateFeed(
       post_id,
-      content
+      content,
+      userId
   );
 
   return c.json(
@@ -159,6 +164,7 @@ feedRouter.openapi(updateFeedRoute, async (c) => {
 
 const deleteFeedRoute = createRoute({
   method: "delete",
+  tags: ["Feed"],
   path: "/feed/{post_id}",
   middleware: [authMiddleware] as const,
   request: {
@@ -186,9 +192,11 @@ const deleteFeedRoute = createRoute({
 
 feedRouter.openapi(deleteFeedRoute, async (c) => {
   const { post_id } = c.req.valid('param');
-
+  const payload = c.get('jwtPayload');
+  const userId = payload.userId;
   const response = await deleteFeed(
-      post_id
+    post_id,
+    userId,
   );
 
   return c.json(

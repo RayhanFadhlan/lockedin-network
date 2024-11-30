@@ -13,6 +13,9 @@ import EditProfile from "./pages/profile/edit-profile";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { AuthProvider } from "./contexts/authProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   useEffect(() => {
@@ -32,6 +35,7 @@ function App() {
   }, []);
   return (
     <Router>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
@@ -51,7 +55,8 @@ function App() {
           <Footer />
         </div>
       </AuthProvider>
-    </Router>
+    </QueryClientProvider>
+  </Router>
   );
 }
 

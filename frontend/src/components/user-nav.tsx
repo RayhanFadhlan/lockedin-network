@@ -16,7 +16,7 @@ export function UserNav() {
   const navigate = useNavigate();
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button className="flex flex-col items-center text-sm hover:text-black focus:outline-none text-gray-500">
           <div className="w-6 h-6">
