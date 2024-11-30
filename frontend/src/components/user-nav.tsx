@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/authProvider";
-import { User, FileText, LogOut, CircleUserRound } from "lucide-react";
+import { User, FileText, LogOut, CircleUserRound, ChevronDown  } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function UserNav() {
@@ -22,11 +22,14 @@ export function UserNav() {
           <div className="w-6 h-6">
             <CircleUserRound />
           </div>
-          <span className=" text-xs">Me</span>
+          <div className="flex">
+            <span className=" text-xs">Me</span>
+            <ChevronDown className="w-4 h-4" />
+            </div>
         </button>
         {/* <button>tes</button> */}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56" align="end" forceMount sideOffset={12}>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user?.name}</p>
