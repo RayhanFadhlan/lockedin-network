@@ -45,3 +45,55 @@ export const sendMessage = async (fromId: string, toId: string, message: string)
     timestamp: newMessage.timestamp.toISOString(),
   };
 };
+
+export const getAllConnections = async (userId: string) => {
+    const user = parseInt(userId);
+  
+    return await prisma.connection.findMany({
+      where: {
+        OR: [
+          { from_id: user },
+          { to_id: user },
+        ],
+      },
+      distinct: ['from_id', 'to_id'],
+      include: {
+        from_user: {
+          select: {
+            id: true,
+            name: true,
+            profile_photo: true,
+          },
+        },
+        to_user: {
+          select: {
+            id: true,
+            name: true,
+            profile_photo: true,
+          },
+        },
+      },
+    });
+  };
+  
+
+  export const getLastChatMessage = async (
+    userId: string,
+    otherUserId: string
+  ) => {
+
+    const user1 = parseInt(userId);
+    const user2 = parseInt(otherUserId);
+
+    return await prisma.chat.findFirst({
+      where: {
+        OR: [
+          { from_id: user1, to_id: user2 },
+          { from_id: user2, to_id: user1 },
+        ],
+      },
+      orderBy: {
+        timestamp: "desc",
+      },
+    });
+  };
