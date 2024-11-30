@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import api from "../../lib/api";
 import toast from "react-hot-toast";
+import { useAuth } from "@/hooks/authProvider";
 
 interface RegisterFormData {
     username: string;
@@ -13,6 +14,7 @@ interface RegisterFormData {
 }
 
 const SignUp = () => {
+    const { login } = useAuth();
     const [formData, setFormData] = useState<RegisterFormData>({
         username: "",
         email: "",
@@ -70,6 +72,17 @@ const SignUp = () => {
                     toast.success(res.data.message);
                     navigate("/");
                 })
+                .then(
+                () => {
+                    api.get("/self").then((res) => {
+                        login({
+                            userId: res.data.body.userId,
+                            name: res.data.body.name,
+                            email: res.data.body.email,
+                        });
+                    });
+                }
+                )
                 .catch((err) => toast.error(err.response.data.message));
         }
     };
