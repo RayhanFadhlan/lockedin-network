@@ -14,6 +14,7 @@ export default {
     		},
     		colors: {
     			background: 'hsl(var(--background))',
+					linkedinblue: '#0a66c2',
     			foreground: 'hsl(var(--foreground))',
     			card: {
     				DEFAULT: 'hsl(var(--card))',

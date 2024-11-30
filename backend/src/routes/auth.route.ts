@@ -13,7 +13,6 @@ import { HttpError } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
 import webpush from "web-push";
 
-
 const authRouter = createHono();
 
 const registerRoute = createRoute({
@@ -114,7 +113,6 @@ authRouter.openapi(loginRoute, async (c) => {
   );
 });
 
-
 const selfRoute = createRoute({
   method: "get",
   path: "/self",
@@ -148,8 +146,6 @@ authRouter.openapi(selfRoute, async (c) => {
   // await Promise.all(
   //   subscriptions.map(async (subscription) => {
   //     try {
-     
-       
 
   //       await webpush.sendNotification(
   //         {
@@ -178,7 +174,34 @@ authRouter.openapi(selfRoute, async (c) => {
     },
     200
   );
+});
 
+const logoutRoute = createRoute({
+  method: "get",
+  path: "/logout",
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: SuccessSchema,
+        },
+      },
+      description: "User information",
+    },
+  },
+});
+
+authRouter.openapi(logoutRoute, async (c) => {
+  c.header("Set-Cookie", `token=; HttpOnly; Path=/; Max-Age=0`);
+
+  return c.json(
+    {
+      success: true,
+      message: "Logout successful",
+      body: {},
+    },
+    200
+  );
 });
 
 export default authRouter;

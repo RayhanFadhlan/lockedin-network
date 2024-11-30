@@ -31,8 +31,8 @@ function App() {
     });
   }, []);
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="container mx-auto px-4 flex-grow mt-[130px]">
@@ -44,17 +44,14 @@ function App() {
               <Route path="/connections/:user_id" element={<Connections />} />
               <Route path="/users" element={<UserList />} />
               <Route path="/profile/:user_id" element={<Profile />} />
-              <Route
-                path="/profile/edit/:user_id"
-                element={<EditProfile />}
-              />
+              <Route path="/profile/edit/:user_id" element={<EditProfile />} />
             </Routes>
             <Toaster />
           </main>
           <Footer />
         </div>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

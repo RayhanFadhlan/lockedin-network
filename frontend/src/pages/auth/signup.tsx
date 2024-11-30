@@ -95,7 +95,7 @@ const SignUp = () => {
                             value={formData.username}
                             onChange={handleChange}
                             required
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue"
                         />
                     </div>
 
@@ -117,7 +117,7 @@ const SignUp = () => {
                                 errors.email
                                     ? "border-red-500"
                                     : "border-gray-300"
-                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                            } rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue`}
                         />
                         {errors.email && (
                             <p className="text-red-500 text-sm mt-1">
@@ -140,7 +140,7 @@ const SignUp = () => {
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue"
                         />
                     </div>
 
@@ -163,7 +163,7 @@ const SignUp = () => {
                                     errors.password
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                } rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue`}
                             />
                             <button
                                 type="button"
@@ -203,7 +203,7 @@ const SignUp = () => {
                                     errors.confirmPassword
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                } rounded-md focus:outline-none focus:ring-2 focus:ring-linkedinblue`}
                             />
                             <button
                                 type="button"
@@ -228,7 +228,7 @@ const SignUp = () => {
 
                     <button
                         type="submit"
-                        className="w-full mt-6 py-2 px-4 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600"
+                        className="w-full mt-6 py-2 px-4 bg-linkedinblue text-white font-medium rounded-md hover:bg-blue-600"
                         onClick={() => handleSubmit}
                     >
                         Agree & Join

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 import bcrypt from 'bcrypt';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -13,7 +14,7 @@ async function main() {
   await prisma.user.deleteMany({});
 
 
-  const password = 'admin123'
+  const password = 'admin123';
   const hashedPassword = await bcrypt.hash(password, 10);
   await prisma.user.create({
     data: {
@@ -28,15 +29,14 @@ async function main() {
   });
 
 
-
   const users = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 50; i++) {
     const user = await prisma.user.create({
       data: {
         username: faker.internet.userName(),
         email: faker.internet.email(),
         password_hash: hashedPassword,
-        name: faker.name.fullName(),
+        name: faker.person.fullName(),
         profile_photo: faker.image.avatar(),
         skills: faker.lorem.words(3),
         work_history: faker.lorem.sentence(),
@@ -46,32 +46,57 @@ async function main() {
   }
 
 
-  for (let i = 0; i < 20; i++) {
-    const fromUser = faker.helpers.arrayElement(users);
-    const toUser = faker.helpers.arrayElement(users.filter(user => user.id !== fromUser.id));
+  const connectionPairs = new Set<string>();
 
-    const existingConnection = await prisma.connection.findFirst({
-      where: {
-        OR: [
-          { from_id: fromUser.id, to_id: toUser.id },
-          { from_id: toUser.id, to_id: fromUser.id },
-        ],
-      },
-    });
 
+  for (const user of users) {
+    const otherUsers = users.filter(u => u.id !== user.id);
+    const connectUsers = faker.helpers.arrayElements(otherUsers, 20);
     
-    const existingRequest = await prisma.connectionRequest.findFirst({
-      where: {
-        from_id: fromUser.id,
-        to_id: toUser.id,
-      },
-    });
+    for (const connectUser of connectUsers) {
+      const pairKey1 = `${user.id}-${connectUser.id}`;
+      const pairKey2 = `${connectUser.id}-${user.id}`;
 
-    if (!existingConnection && !existingRequest) {
+      if (!connectionPairs.has(pairKey1) && !connectionPairs.has(pairKey2)) {
+        const timestamp = faker.date.past();
+        await prisma.$transaction([
+          prisma.connection.create({
+            data: {
+              from_id: user.id,
+              to_id: connectUser.id,
+              created_at: timestamp,
+            },
+          }),
+          prisma.connection.create({
+            data: {
+              from_id: connectUser.id,
+              to_id: user.id,
+              created_at: timestamp,
+            },
+          })
+        ]);
+
+        connectionPairs.add(pairKey1);
+        connectionPairs.add(pairKey2);
+      }
+    }
+  }
+
+ 
+  for (const user of users) {
+    const otherUsers = users.filter(u => u.id !== user.id);
+    const availableUsers = otherUsers.filter(u => 
+      !connectionPairs.has(`${user.id}-${u.id}`) && 
+      !connectionPairs.has(`${u.id}-${user.id}`)
+    );
+    
+    const requestUsers = faker.helpers.arrayElements(availableUsers, 15);
+
+    for (const requestUser of requestUsers) {
       await prisma.connectionRequest.create({
         data: {
-          from_id: fromUser.id,
-          to_id: toUser.id,
+          from_id: requestUser.id,
+          to_id: user.id,
           created_at: faker.date.past(),
         },
       });
@@ -79,49 +104,19 @@ async function main() {
   }
 
 
-  for (let i = 0; i < 5; i++) {
-    const fromUser = faker.helpers.arrayElement(users);
-    const toUser = faker.helpers.arrayElement(users.filter(user => user.id !== fromUser.id));
-
-    const existingConnection = await prisma.connection.findFirst({
-      where: {
-        OR: [
-          { from_id: fromUser.id, to_id: toUser.id },
-          { from_id: toUser.id, to_id: fromUser.id },
-        ],
-      },
-    });
-
-    if (!existingConnection) {
-      await prisma.connection.create({
-        data: {
-          from_id: fromUser.id,
-          to_id: toUser.id,
-          created_at: faker.date.past(),
-        },
-      });
-
-    
-      await prisma.connection.create({
-        data: {
-          from_id: toUser.id,
-          to_id: fromUser.id,
-          created_at: faker.date.past(),
-        },
-      });
-    }
+  for (const user of users) {
+    await Promise.all(
+      Array(10).fill(0).map(() =>
+        prisma.feed.create({
+          data: {
+            content: faker.lorem.paragraph(),
+            user_id: user.id,
+            created_at: faker.date.past(),
+          },
+        })
+      )
+    );
   }
-  for (let i = 0; i < 20; i++) {
-    const user = faker.helpers.arrayElement(users);
-    await prisma.feed.create({
-      data: {
-        content: faker.lorem.paragraph(),
-        user_id: user.id,
-        created_at: faker.date.past(),
-      },
-    });
-  }
-
 
   console.log('Seed completed');
 }

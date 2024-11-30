@@ -1,6 +1,6 @@
 import {
   BellIcon,
-  CircleUserRound,
+  Handshake,
   House,
   Menu,
   MessageSquareText,
@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/authProvider";
 import { Button } from "./ui/button";
+import { UserNav } from "./user-nav";
 // import Cookies from "js-cookie";
 
 interface NavItemProps {
@@ -71,11 +72,13 @@ const Navbar: React.FC = () => {
                   to="/messaging"
                 />
                 <NavItem
-                  icon={<BellIcon />}
-                  label="Notifications"
-                  to="/notifications"
+                  icon={<Handshake />}
+                  label="Invitation"
+                  to="/invitation"
                 />
-                <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
+                {/* <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
+                 */}
+                 <UserNav />
               </>
             ) : (
               <>
@@ -118,7 +121,7 @@ const Navbar: React.FC = () => {
               label="Notifications"
               to="/notifications"
             />
-            <NavItem icon={<CircleUserRound />} label="Me" to="/profile" />
+            <UserNav />
           </div>
         </div>
       )}
