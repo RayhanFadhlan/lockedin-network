@@ -12,7 +12,7 @@ export const getChatHistory = async (userId1: string, userId2: string) => {
       ],
     },
     orderBy: {
-      timestamp: 'desc',
+      timestamp: 'asc',
     },
   });
 
