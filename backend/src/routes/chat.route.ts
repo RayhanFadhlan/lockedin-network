@@ -23,7 +23,7 @@ const getConnectionsWithLastMessageRoute = createRoute({
       },
       description: "Connections with last messages fetched successfully",
     },
-    404: {
+    400: {
       content: {
         "application/json": {
           schema: ErrorSchema,
@@ -67,7 +67,7 @@ const getChatHistoryRoute = createRoute({
       },
       description: "Chat history fetched successfully",
     },
-    404: {
+    400: {
       content: {
         "application/json": {
           schema: ErrorSchema,
