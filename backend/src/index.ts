@@ -14,6 +14,7 @@ import feedRouter from "./routes/feed.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import { initSocketServer } from "./services/chat.service.js";
 import { Server as HttpServer } from "node:http";
+import chatRouter from "./routes/chat.route.js";
 
 
 const main = new OpenAPIHono();
@@ -45,6 +46,7 @@ app.route("/", profileRouter);
 app.route("/", userRouter);
 app.route("/", connectionRouter);
 app.route("/", feedRouter);
+app.route("/", chatRouter);
 app.route("/", notificationRouter);
 
 app.openAPIRegistry.registerComponent("securitySchemes", "auth", {

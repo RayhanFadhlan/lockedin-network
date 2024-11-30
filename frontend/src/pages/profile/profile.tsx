@@ -81,7 +81,7 @@ const Profile = () => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="relative bg-white shadow-md rounded-lg overflow-hidden">
-        <div className="h-[150px] bg-[#a0b4b7]" />
+        <div className="h-[150px] bg-[url('/profile-banner.svg')]" />
         <div className="absolute left-8 bottom-[146px]">
           <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden">
             <img

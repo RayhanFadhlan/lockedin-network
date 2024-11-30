@@ -10,6 +10,7 @@ import Connections from "./pages/connection/connections";
 import UserList from "./pages/connection/user-list";
 import Profile from "./pages/profile/profile";
 import EditProfile from "./pages/profile/edit-profile";
+import Chat from "./pages/chat/chat";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { AuthProvider } from "./contexts/authProvider";
@@ -39,7 +40,7 @@ function App() {
       <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <main className="container mx-auto px-4 flex-grow mt-[130px]">
+          <main className="container mx-auto px-4 flex-grow mt-[80px]">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/signup" element={<SignUp />} />
@@ -49,6 +50,7 @@ function App() {
               <Route path="/users" element={<UserList />} />
               <Route path="/profile/:user_id" element={<Profile />} />
               <Route path="/profile/edit/:user_id" element={<EditProfile />} />
+              <Route path="/messaging" element={<Chat />} />
             </Routes>
             <Toaster />
           </main>
