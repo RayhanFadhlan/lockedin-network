@@ -12,7 +12,7 @@ export const getChatHistory = async (userId1: string, userId2: string) => {
       ],
     },
     orderBy: {
-      timestamp: 'asc',
+      timestamp: 'desc',
     },
   });
 
@@ -48,7 +48,7 @@ export const sendMessage = async (fromId: string, toId: string, message: string)
 
 export const getAllConnections = async (userId: string) => {
     const user = parseInt(userId);
-
+  
     return await prisma.connection.findMany({
       where: {
         OR: [
@@ -56,6 +56,7 @@ export const getAllConnections = async (userId: string) => {
           { to_id: user },
         ],
       },
+      distinct: ['from_id', 'to_id'],
       include: {
         from_user: {
           select: {
@@ -74,6 +75,7 @@ export const getAllConnections = async (userId: string) => {
       },
     });
   };
+  
 
   export const getLastChatMessage = async (
     userId: string,

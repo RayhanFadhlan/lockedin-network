@@ -22,6 +22,7 @@ export const initSocketServer = (server: HTTPServer) => {
     if (!userId) {
       return next(new Error("User ID is required"));
     }
+    socket.data.userId = userId;
     return next();
   }
   );
@@ -34,9 +35,9 @@ export const initSocketServer = (server: HTTPServer) => {
     socket.join(userRoom);
     console.log(`${socket.id} joined room: ${userRoom}`);
 
-    socket.on("sendMessage",async ({ fromId, toId, message }: { fromId: string; toId: string;message: string }) => {
+    socket.on("sendMessage",async ({ fromId, toId, message }: { fromId: string; toId: string; message: string }) => {
         try {
-          const newMessage = await sendMessage(fromId, toId, message);
+            const newMessage = await sendMessage(fromId, toId, message);
           console.log("New message:", newMessage);
           const room = `room-${toId}`;
           socket.to(room).emit("receiveMessage", newMessage); 
@@ -46,16 +47,6 @@ export const initSocketServer = (server: HTTPServer) => {
         }
       }
     );
-
-    socket.on("getChatHistory", async ({ userId1, userId2 }: { userId1: string; userId2: string }) => {
-        try {
-            const chatHistory = await getChatHistory(userId1, userId2);
-            socket.emit("chatHistory", chatHistory);
-        } catch (error: any) {
-            console.error("Error getting chat history:", error);
-            socket.emit("error", error.message);
-        }
-    });
 
     socket.on("disconnect", () => {
       console.log("User disconnected");
@@ -69,14 +60,29 @@ export const getConnectionsWithLastMessage = async (userId: string) => {
   
     if (!connections.length) {
       throw new HttpError(HttpStatus.NOT_FOUND, {
-        message: "No connections found for this user.",
+        message: 'No connections found for this user.',
       });
     }
   
+    const uniqueConnections = new Map();
+  
+    connections.forEach((connection) => {
+      const otherUser =
+        connection.from_id.toString() === userId
+          ? connection.to_user
+          : connection.from_user;
+  
+      if (!uniqueConnections.has(otherUser.id)) {
+        uniqueConnections.set(otherUser.id, connection);
+      }
+    });
+  
     const connectionsWithLastMessages = await Promise.all(
-      connections.map(async (connection) => {
+      Array.from(uniqueConnections.values()).map(async (connection) => {
         const otherUser =
-          connection.from_id.toString() === userId ? connection.to_user : connection.from_user;
+          connection.from_id.toString() === userId
+            ? connection.to_user
+            : connection.from_user;
   
         const lastChat = await getLastChatMessage(userId, otherUser.id.toString());
   
@@ -92,4 +98,15 @@ export const getConnectionsWithLastMessage = async (userId: string) => {
     );
   
     return connectionsWithLastMessages;
+  };
+
+  export const getChatHistoryForUsers  = async (userId1: string, userId2: string) => {
+    const chatHistory = await getChatHistory(userId1, userId2);
+    if (!chatHistory.length) {
+        throw new HttpError(HttpStatus.NOT_FOUND, {
+          message: "No chat history.",
+        });
+      }
+
+    return chatHistory;
   };
