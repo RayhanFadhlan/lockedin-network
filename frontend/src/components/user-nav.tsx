@@ -1,4 +1,3 @@
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/authProvider";
+import { useAuth } from "@/contexts/authProvider";
 import { User, FileText, LogOut, CircleUserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -38,7 +37,9 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate(`/profile/${user?.userId}`)}>
+          <DropdownMenuItem
+            onClick={() => navigate(`/profile/${user?.userId}`)}
+          >
             <User className="mr-2 h-4 w-4" />
             <span>My Profile</span>
           </DropdownMenuItem>

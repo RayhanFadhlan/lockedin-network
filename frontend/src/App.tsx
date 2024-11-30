@@ -12,7 +12,7 @@ import Profile from "./pages/profile/profile";
 import EditProfile from "./pages/profile/edit-profile";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { AuthProvider } from "./hooks/authProvider";
+import { AuthProvider } from "./contexts/authProvider";
 
 function App() {
   useEffect(() => {

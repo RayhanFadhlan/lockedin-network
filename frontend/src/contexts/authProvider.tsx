@@ -3,8 +3,8 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
-  user: { userId: string; name: string, email: string } | null;
-  login: (user: { userId: string; name: string , email: string}) => void;
+  user: { userId: string; name: string, email: string, username : string, profile_photo: string } | null;
+  login: (user: { userId: string; name: string , email: string, username : string, profile_photo: string}) => void;
   logout: () => void;
   isLoggedIn: boolean;
 }
@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
  
-  const [user, setUser] = useState<{ userId: string; name: string; email: string } | null>(() => {
+  const [user, setUser] = useState<{ userId: string; name: string; email: string, username : string, profile_photo: string } | null>(() => {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [user]);
 
-  const login = (user: { userId: string; name: string, email: string }) => {
+  const login = (user: { userId: string; name: string, email: string, username : string, profile_photo: string }) => {
     setUser(user);
   };
 

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import api from "../../lib/api";
 import toast from "react-hot-toast";
-import { useAuth } from "@/hooks/authProvider";
+import { useAuth } from "@/contexts/authProvider";
 
 interface LoginFormValues {
   identifier: string;
@@ -71,6 +71,8 @@ const Login = () => {
               userId: res.data.body.userId,
               name: res.data.body.name,
               email: res.data.body.email,
+              username: res.data.body.username,
+              profile_photo: res.data.body.profile_photo,
             });
           });
         })

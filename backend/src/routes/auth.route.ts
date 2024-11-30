@@ -12,6 +12,7 @@ import { jwt, verify } from "hono/jwt";
 import { HttpError } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
 import webpush from "web-push";
+import { findUserbyId } from "../repositories/user.repository.js";
 
 const authRouter = createHono();
 
@@ -136,6 +137,14 @@ authRouter.openapi(selfRoute, async (c) => {
   }
   const decoded = await verify(token, secret);
 
+  const user = await findUserbyId(decoded.userId as string);
+
+  if (!user) {
+    throw new HttpError(404, { message: "User not found" });
+  }
+  decoded.profile_photo = user.profile_photo;
+  decoded.username = user.username;
+
   // const subscriptions = await prisma.pushSubscription.findMany();
 
   // const notificationPayload = JSON.stringify({
@@ -203,5 +212,7 @@ authRouter.openapi(logoutRoute, async (c) => {
     200
   );
 });
+
+
 
 export default authRouter;
