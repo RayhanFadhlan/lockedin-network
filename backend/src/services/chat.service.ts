@@ -35,11 +35,11 @@ export const initSocketServer = (server: HTTPServer) => {
     socket.join(userRoom);
     console.log(`${socket.id} joined room: ${userRoom}`);
 
-    socket.on("sendMessage",async ({ fromId, toId, message }: { fromId: string; toId: string; message: string }) => {
+    socket.on("sendMessage",async ({ from_id, to_id, message }: { from_id: string; to_id: string; message: string }) => {
         try {
-            const newMessage = await sendMessage(fromId, toId, message);
+            const newMessage = await sendMessage(from_id, to_id, message);
           console.log("New message:", newMessage);
-          const room = `room-${toId}`;
+          const room = `room-${to_id}`;
           socket.to(room).emit("receiveMessage", newMessage); 
         } catch (error: any) {
           console.error("Error sending message:", error);
@@ -47,7 +47,6 @@ export const initSocketServer = (server: HTTPServer) => {
         }
       }
     );
-
     socket.on("disconnect", () => {
       console.log("User disconnected");
     });

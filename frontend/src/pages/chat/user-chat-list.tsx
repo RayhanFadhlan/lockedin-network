@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Search } from "lucide-react";
 import api from "@/lib/api";
+import { useChatStore } from "@/hooks/useChatStore";
 
 interface User {
   userId: string;
@@ -20,7 +21,7 @@ export function UsersChatList({
   onSelectUser,
   selectedUserId,
 }: UsersChatListProps) {
-  const [users, setUsers] = useState<User[]>([]);
+  const { users, setUsers } = useChatStore();
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -31,10 +32,9 @@ export function UsersChatList({
         const response = await api.get("/chat/connections");
         const { body, loggedInUserId } = response.data;
         setUsers(body);
-        setFilteredUsers(body);
         setLoggedInUserId(loggedInUserId);
-      } catch (err) {
-        throw new Error('Failed to fetch users');
+      } catch {
+        throw new Error("Failed to fetch users");
       }
     };
 

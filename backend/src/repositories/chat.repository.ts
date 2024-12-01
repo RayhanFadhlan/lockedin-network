@@ -16,18 +16,21 @@ export const getChatHistory = async (userId1: string, userId2: string) => {
     },
   });
 
-  return chatHistory.map((message) => ({
-    ...message,
-    id: Number(message.id),
-    from_id: Number(message.from_id),
-    to_id: Number(message.to_id),
-    timestamp: message.timestamp.toISOString(),
+  const formattedHistory = chatHistory.map(msg => ({
+    id: msg.id,
+    from_id: msg.from_id,
+    to_id: msg.to_id,
+    message: msg.message,
+    timestamp: msg.timestamp.toISOString()
   }));
+
+  return formattedHistory;
 };
 
 export const sendMessage = async (fromId: string, toId: string, message: string) => {
   const fromUser = parseInt(fromId);
   const toUser = parseInt(toId);
+  console.log(fromId, toId, message);
 
   const newMessage = await prisma.chat.create({
     data: {
@@ -39,9 +42,9 @@ export const sendMessage = async (fromId: string, toId: string, message: string)
 
   return {
     ...newMessage,
-    id: Number(newMessage.id),
-    from_id: Number(newMessage.from_id),
-    to_id: Number(newMessage.to_id),
+    id: String(newMessage.id),
+    from_id: String(newMessage.from_id),
+    to_id: String(newMessage.to_id),
     timestamp: newMessage.timestamp.toISOString(),
   };
 };
