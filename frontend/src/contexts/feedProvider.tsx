@@ -21,6 +21,7 @@ export function FeedProvider({ children }: { children: ReactNode }) {
       api.post("/feed", { content }).then(res => res.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["myfeeds"] });
       toast.success(data.message);
     },
     onError: () => {
@@ -33,6 +34,7 @@ export function FeedProvider({ children }: { children: ReactNode }) {
       api.put(`/feed/${id}`, { content }).then(res => res.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["myfeeds"] });
       toast.success(data.message);
     },
     onError: () => {
@@ -45,6 +47,7 @@ export function FeedProvider({ children }: { children: ReactNode }) {
       api.delete(`/feed/${id}`).then(res => res.data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
+      queryClient.invalidateQueries({ queryKey: ["myfeeds"] });
       toast.success(data.message);
     },
     onError: () => {

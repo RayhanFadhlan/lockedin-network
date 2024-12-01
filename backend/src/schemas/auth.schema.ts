@@ -41,8 +41,12 @@ export const RegisterResponseSchema = z.object({
 })
 
 export const LoginSchema = z.object({
-  identifier: z.string(),
-  password: z.string().min(8),
+  identifier: z.string().openapi({
+    example: 'admin123'
+    }),
+  password: z.string().min(8).openapi({
+    example: 'admin123'
+    }),
 });
 
 

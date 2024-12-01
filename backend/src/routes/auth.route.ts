@@ -150,35 +150,7 @@ authRouter.openapi(selfRoute, async (c) => {
   decoded.profile_photo = user.profile_photo;
   decoded.username = user.username;
 
-  // const subscriptions = await prisma.pushSubscription.findMany();
 
-  // const notificationPayload = JSON.stringify({
-  //   title: "New Feed",
-  //   body: "content",
-  // });
-
-  // await Promise.all(
-  //   subscriptions.map(async (subscription) => {
-  //     try {
-
-  //       await webpush.sendNotification(
-  //         {
-  //           endpoint: subscription.endpoint,
-  //           keys: {
-  //             // @ts-ignore
-  //             auth: subscription.keys.auth,
-  //             // @ts-ignore
-  //             p256dh: subscription.keys.p256dh,
-  //           },
-  //         },
-  //         notificationPayload
-  //       );
-  //     } catch (error: unknown) {
-  //       console.error("Failed to send notification:", error);
-  //     }
-  //   })
-  // );
-  // console.log("Successfully sent notification");
 
   return c.json(
     {

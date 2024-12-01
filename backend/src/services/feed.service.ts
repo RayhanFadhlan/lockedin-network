@@ -108,3 +108,36 @@ export const deleteFeed = async (postId: string, userId: string) => {
     };
   }
 };
+
+
+export const getMyFeed = async (userId: string) => {
+  try {
+    const feeds = await prisma.feed.findMany({
+      where: {
+        user_id: parseInt(userId),
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            profile_photo: true,
+          },
+        },
+      },
+    });
+    return {
+      success: true,
+      message: "Feeds fetched successfully.",
+      body: feeds,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Feeds create failed.",
+      error: error,
+    };
+  }
+}

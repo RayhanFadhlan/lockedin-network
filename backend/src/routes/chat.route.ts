@@ -12,6 +12,7 @@ const chatRouter = createHono();
 
 const getConnectionsWithLastMessageRoute = createRoute({
   method: "get",
+  tags: ["Chat"],
   path: "/chat/connections",
   middleware: [authMiddleware] as const,
   responses: {
@@ -53,6 +54,7 @@ chatRouter.openapi(getConnectionsWithLastMessageRoute, async (c) => {
 
 const getChatHistoryRoute = createRoute({
   method: "get",
+  tags: ["Chat"],
   path: "/chat/history",
   middleware: [authMiddleware] as const,
   request: {

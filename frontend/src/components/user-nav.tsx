@@ -8,7 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/authProvider";
-import { User, FileText, LogOut, CircleUserRound, ChevronDown  } from "lucide-react";
+import {
+  User,
+  FileText,
+  LogOut,
+  CircleUserRound,
+  ChevronDown,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function UserNav() {
@@ -25,11 +31,16 @@ export function UserNav() {
           <div className="flex">
             <span className=" text-xs">Me</span>
             <ChevronDown className="w-4 h-4" />
-            </div>
+          </div>
         </button>
         {/* <button>tes</button> */}
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount sideOffset={12}>
+      <DropdownMenuContent
+        className="w-56"
+        align="end"
+        forceMount
+        sideOffset={12}
+      >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user?.name}</p>
@@ -46,7 +57,7 @@ export function UserNav() {
             <User className="mr-2 h-4 w-4" />
             <span>My Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/myfeed")}>
             <FileText className="mr-2 h-4 w-4" />
             <span>My Posts</span>
           </DropdownMenuItem>

@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { AuthProvider } from "./contexts/authProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotificationToast from "./components/notification-toast";
+import MyFeed from "./pages/home/myfeed";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ function App() {
                   element={<EditProfile />}
                 />
                 <Route path="/messaging" element={<Chat />} />
+                <Route path="/myfeed" element={<MyFeed  />} />
               </Routes>
               <Toaster />
             </main>

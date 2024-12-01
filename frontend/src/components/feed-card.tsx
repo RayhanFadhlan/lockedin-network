@@ -26,7 +26,7 @@ export function FeedCard({ post }: FeedCardProps) {
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-3">
             <Avatar
-              src="/profile.svg"
+              src={post.user.profile_photo}
               alt={post.user.name}
               className="w-12 h-12 rounded-full"
             />

@@ -3,6 +3,7 @@ import { FeedDialog } from "@/components/feed-dialog";
 import { ProfileWidget } from "@/components/profile-widget";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/authProvider";
 import { FeedProvider } from "@/contexts/feedProvider";
 import api from "@/lib/api";
 import { Feed } from "@/lib/types";
@@ -20,6 +21,8 @@ interface FeedResponse {
 
 function Home() {
   const limit = 10;
+  const { user } = useAuth();
+
 
   const { ref, inView } = useInView();
 
@@ -83,7 +86,7 @@ function Home() {
 
         <div className="max-w-[100vw] md:max-w-[60vw] flex flex-col gap-4">
           <div className="artdecoCard flex flex-row gap-2 !p-4">
-            <Avatar src="/profile.svg" className="w-12 h-12 rounded-full" />
+            <Avatar src={user?.profile_photo} className="w-12 h-12 rounded-full" />
             <FeedDialog
               trigger={
                 <button className="w-full h-full rounded-full border-2 font-semibold text-sm text-muted-foreground text-left pl-4 hover:bg-muted border-muted">
