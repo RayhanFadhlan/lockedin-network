@@ -13,6 +13,8 @@ import { HttpError } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
 import webpush from "web-push";
 import { findUserbyId } from "../repositories/user.repository.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { unsubscribeNotification } from "../services/notification.service.js";
 
 const authRouter = createHono();
 
@@ -191,6 +193,7 @@ authRouter.openapi(selfRoute, async (c) => {
 const logoutRoute = createRoute({
   method: "get",
   path: "/logout",
+  middleware: [authMiddleware] as const,
   tags: ["Auth"],
   responses: {
     200: {
@@ -205,7 +208,14 @@ const logoutRoute = createRoute({
 });
 
 authRouter.openapi(logoutRoute, async (c) => {
+
+  const payload = c.get('jwtPayload');
+  const userId = payload.userId;
+
+  unsubscribeNotification(userId);
+
   c.header("Set-Cookie", `token=; HttpOnly; Path=/; Max-Age=0`);
+
 
   return c.json(
     {

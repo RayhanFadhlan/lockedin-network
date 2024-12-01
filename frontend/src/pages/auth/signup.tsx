@@ -4,6 +4,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import api from "../../lib/api";
 import toast from "react-hot-toast";
 import { useAuth } from "@/contexts/authProvider";
+import { subscribeUser } from "@/lib/notification";
 
 interface RegisterFormData {
   username: string;
@@ -84,6 +85,7 @@ const SignUp = () => {
             });
           });
         })
+        .then(async() => await subscribeUser())
         .catch((err) => toast.error(err.response.data.message));
     }
   };

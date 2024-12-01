@@ -6,6 +6,7 @@ import {
   getAllConnections
 } from "../repositories/chat.repository.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
+import { notifyUser } from "./notification.service.js";
 
 
 export const initSocketServer = (server: HTTPServer) => {
@@ -41,6 +42,7 @@ export const initSocketServer = (server: HTTPServer) => {
           console.log("New message:", newMessage);
           const room = `room-${to_id}`;
           socket.to(room).emit("receiveMessage", newMessage); 
+          await notifyUser(from_id, to_id, message);
         } catch (error: any) {
           console.error("Error sending message:", error);
           socket.emit("error", error.message); 
@@ -102,9 +104,7 @@ export const getConnectionsWithLastMessage = async (userId: string) => {
   export const getChatHistoryForUsers  = async (userId1: string, userId2: string) => {
     const chatHistory = await getChatHistory(userId1, userId2);
     if (!chatHistory.length) {
-        throw new HttpError(HttpStatus.NOT_FOUND, {
-          message: "No chat history.",
-        });
+        return [];
       }
 
     return chatHistory;

@@ -6,6 +6,7 @@ import {
   postFeeds,
   updateFeeds,
 } from "../repositories/feed.repository.js";
+import { notifyConnection } from "./notification.service.js";
 
 export const getFeeds = async (
   userId: string,
@@ -31,6 +32,7 @@ export const getFeeds = async (
 export const createFeed = async (userId: string, content: string) => {
   try {
     const postedFeeds = await postFeeds(userId, content);
+    await notifyConnection(userId, content);
     return {
       success: true,
       message: "Feeds created successfully.",
@@ -73,7 +75,7 @@ export const deleteFeed = async (postId: string, userId: string) => {
         id: parseInt(postId),
       },
     });
-    if(!feed) {
+    if (!feed) {
       throw new HttpError(HttpStatus.NOT_FOUND, {
         message: "Feed not found",
       });

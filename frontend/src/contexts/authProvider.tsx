@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const logout = () => {
     setUser(null);
     api.get('/logout');
-    navigate('/');
+    navigate('/login');
    
   };
 

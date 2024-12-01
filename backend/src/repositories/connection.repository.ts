@@ -98,3 +98,17 @@ export const getConnectionCount = async (userId: string) => {
 
   return connectionCount;
 }
+
+export const getConnectedUser = async (userId: string) => {
+  const id = parseInt(userId);
+  const connections = await prisma.connection.findMany({
+    where: {
+      from_id: id
+    },
+    select: {
+      to_id: true
+    }
+  });
+
+  return connections.map(connection => connection.to_id);
+}

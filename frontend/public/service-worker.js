@@ -14,7 +14,7 @@ self.addEventListener('push', (event) => {
  
   event.waitUntil(
     self.registration.showNotification(data.title || 'New Notification', {
-      body: data.body,
+      body: `${data.body.title} : ${data.body.content}`,
       vibrate: [200, 100, 200], 
       tag: 'notification', 
       renotify: true,

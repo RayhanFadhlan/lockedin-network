@@ -1,5 +1,6 @@
 import { HttpError, HttpStatus } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
+import { getConnectedUser } from "./connection.repository.js";
 
 export const getFeedsByUserId = async (userId: string) => {
   const id = parseInt(userId);
@@ -74,6 +75,8 @@ export const getConnectedFeeds = async (
 
 export const postFeeds = async (userId: string, content: string) => {
   const id = parseInt(userId);
+
+  
   const post = await prisma.feed.create({
     data: {
       // updated_at: Date(),
