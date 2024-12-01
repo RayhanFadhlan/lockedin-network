@@ -51,11 +51,24 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
     });
     setSocket(newSocket);
 
-    newSocket.on('receiveMessage', (newMessage: Message) => {
-      setMessages((prev) => [...prev, newMessage]);
-    });
-    
-}, []);
+    newSocket.on('receiveMessage', (newMessage: any) => {
+        const formattedMessage: Message = {
+          id: String(newMessage.id),
+          senderId: String(newMessage.from_id),
+          receiverId: String(newMessage.to_id),
+          content: newMessage.message,
+          timestamp: newMessage.timestamp,
+          senderAvatar:
+          newMessage.from_id === currentUser.userId
+            ? currentUser.profile_photo
+            : user?.profile_photo || '/default-avatar.png',
+        };
+        setMessages((prev) => [...prev, formattedMessage]);
+      });
+      return () => {
+        newSocket.disconnect();
+      };
+    }, [currentUser.userId, user]);
 
   const handleSendMessage = () => {
     if (!messageText.trim() || !user || !socket) return;
@@ -92,8 +105,11 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
             receiverId: String(message.to_id), 
             content: message.message, 
             timestamp: message.timestamp, 
-            senderAvatar: '/default-avatar.png',
-          }));
+            senderAvatar:
+            String(message.from_id) === currentUser.userId
+            ? currentUser.profile_photo
+            : user?.profile_photo || '/default-avatar.png',
+                }));
           
         
           setMessages(formattedMessages);
