@@ -5,7 +5,7 @@ export function ProfileWidget() {
   const { user } = useAuth();
 
   return (
-    <div className="artdecoCard w-full md:w-[225px] overflow-hidden flex flex-col h-fit sticky top-4">
+    <div className="artdecoCard w-full md:w-[225px] overflow-hidden flex flex-col h-fit top-[95px] sticky top-4">
       <div className="relative h-16 bg-[url('/profile-banner.svg')] bg-cover bg-center">
         <div className="absolute -bottom-8 left-4">
           <Avatar
