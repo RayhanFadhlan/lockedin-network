@@ -27,7 +27,7 @@ interface ChatPlaceProps {
 const socketServerUrl = "http://localhost:3000";
 
 export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
-  const { updateUser } = useChatStore();
+  const { updateUser, users } = useChatStore();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -69,17 +69,17 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
         },
       ]);
 
+      const userKiri = users.find((u) => u.userId === newMessage.from_id);
+
       updateUser({
-        userId:
-          newMessage.from_id === currentUser.userId
-            ? newMessage.to_id
-            : newMessage.from_id,
-        name: user.name,
-        profile_photo: user.profile_photo,
+        userId: newMessage.from_id,
+        name: userKiri?.name || "",
+        profile_photo: userKiri?.profile_photo || "",
         lastMessage: newMessage.message,
         lastMessageTime: newMessage.timestamp,
         lastMessageSenderId: newMessage.from_id,
       });
+
     });
 
     return () => {
@@ -90,6 +90,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
     user?.profile_photo,
     currentUser.profile_photo,
     updateUser,
+    users,
     user,
   ]);
 
