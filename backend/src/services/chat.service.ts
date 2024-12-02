@@ -7,6 +7,7 @@ import {
 } from "../repositories/chat.repository.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
 import { notifyUser } from "./notification.service.js";
+import { jwt, verify } from "hono/jwt";
 
 
 export const initSocketServer = (server: HTTPServer) => {
@@ -18,10 +19,24 @@ export const initSocketServer = (server: HTTPServer) => {
     transports: ["websocket"],
   });
 
-  io.use((socket: Socket, next) => {
+  io.use(async (socket: Socket, next) => {
+
+    const cookies = socket.handshake.headers.cookie;
+    if(!cookies) {
+      return next(new Error("Authentication error"));
+    }
+
+    const token = cookies.split("=")[1];
+    const payload = await verify(token, process.env.JWT_SECRET as string);
+    const userIdToken = payload.userId;
+
     const userId = socket.handshake.auth.userId;
+    
     if (!userId) {
       return next(new Error("User ID is required"));
+    }
+    if(userIdToken !== userId) {
+      return next(new Error("User ID is not valid"));
     }
     socket.data.userId = userId;
     return next();
