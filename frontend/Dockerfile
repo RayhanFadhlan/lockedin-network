@@ -16,4 +16,7 @@ ENV PORT=5173
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+RUN npm run build
+
+CMD ["npm", "run", "preview", "--", "--host"]
+# CMD ["npm", "run", "dev", "--", "--host"]

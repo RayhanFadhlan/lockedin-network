@@ -15,7 +15,7 @@ import { useInView } from "react-intersection-observer";
 interface FeedResponse {
   body: {
     feeds: Feed[];
-    nextCursor: number;
+    cursor: number;
   };
 }
 
@@ -49,7 +49,7 @@ function Home() {
     queryKey: ["feeds"],
     queryFn: fetchFeeds,
     initialPageParam: undefined,
-    getNextPageParam: (lastPage) => lastPage.body.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.body.cursor,
   });
 
   useEffect(() => {
