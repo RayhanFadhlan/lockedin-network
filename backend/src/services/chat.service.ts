@@ -64,6 +64,17 @@ export const initSocketServer = (server: HTTPServer) => {
         }
       }
     );
+
+    socket.on("typing", ({ from_id, to_id }: { from_id: string; to_id: string }) => {
+        const room = `room-${to_id}`;
+        socket.to(room).emit("typing", from_id);
+      });
+    
+      socket.on("stopTyping", ({ from_id, to_id }: { from_id: string; to_id: string }) => {
+        const room = `room-${to_id}`;
+        socket.to(room).emit("stopTyping", from_id);
+      });
+
     socket.on("disconnect", () => {
       console.log("User disconnected");
     });

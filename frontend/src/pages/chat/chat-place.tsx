@@ -31,6 +31,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const filteredMessages = messages.filter(
@@ -40,6 +41,10 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
       (message.from_id === user?.userId && message.to_id === currentUser.userId)
   );
 
+  useEffect(() => {
+    setMessageText("");
+  }, [user]);
+  
   useEffect(() => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop =
@@ -82,6 +87,19 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
 
     });
 
+    newSocket.on("typing", (typingUserId: string) => {
+        if (typingUserId === user?.userId) {
+          setIsTyping(true);
+        }
+      });
+  
+      newSocket.on("stopTyping", (typingUserId: string) => {
+        if (typingUserId === user?.userId) {
+          setIsTyping(false);
+        }
+      });
+  
+
     return () => {
       newSocket.disconnect();
     };
@@ -93,6 +111,28 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
     users,
     user,
   ]);
+
+  useEffect(() => {
+    if (!socket || !user) return;
+    if (messageText.trim().length != 0) {
+      socket.emit("typing", { from_id: currentUser.userId, to_id: user.userId });
+    } else {
+      socket.emit("stopTyping", { from_id: currentUser.userId, to_id: user.userId });
+    }
+  }, [messageText, socket, currentUser.userId, user]);
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    setMessageText(newValue);
+  
+    if (!socket || !user) return;
+
+    if (newValue.trim().length > 0) {
+      socket.emit("typing", { from_id: currentUser.userId, to_id: user.userId });
+    } else {
+      socket.emit("stopTyping", { from_id: currentUser.userId, to_id: user.userId });
+    }
+  };
 
   const handleSendMessage = () => {
     if (!messageText.trim() || !user || !socket) return;
@@ -106,10 +146,12 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
       avatar: currentUser.profile_photo,
     };
 
+    socket.emit("sendMessage", newMessage);
     setMessages((prev) => [...prev, newMessage]);
 
-    socket.emit("sendMessage", newMessage);
     setMessageText("");
+
+    socket.emit("stopTyping", { from_id: currentUser.userId, to_id: user.userId });
 
     updateUser({
       userId: user.userId,
@@ -178,13 +220,21 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
                 : "flex-row"
             }`}
           >
-            <img
-              src={message.avatar || "/default-avatar.png"}
-              alt="Avatar"
-              className="h-8 w-8 rounded-full object-cover"
-            />
+            <div className="flex flex-col items-center">
+                <img
+                src={message.avatar || '/default-avatar.png'}
+                alt="Avatar"
+                className="h-8 w-8 rounded-full object-cover"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                {message.from_id === currentUser.userId
+                    ? currentUser.name.split(' ')[0]
+                    : user?.name.split(' ')[0]}
+                </p>
+            </div>
+
             <div
-              className={`rounded-md px-4 py-2 ${
+              className={`rounded-md px-4 py-2 break-words max-w-[280px] ${
                 message.from_id === currentUser.userId
                   ? "bg-blue-500 text-white"
                   : "bg-gray-100 text-gray-900"
@@ -200,14 +250,35 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
             </div>
           </div>
         ))}
+    
+        {isTyping && (
+          <div className="mb-4 flex items-start gap-3">
+            <div className="flex flex-col items-center">
+                <img
+                src={user.profile_photo || '/default-avatar.png'}
+                alt="Avatar"
+                className="h-8 w-8 rounded-full object-cover"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                {user?.name.split(' ')[0]}
+                </p>
+            </div>
+          <div
+            className="rounded-md px-4 py-2 bg-gray-100 text-gray-900 italic text-sm"
+          >
+            Sedang mengetik...
+          </div>
+        </div>
+        )}
+
       </div>
 
-      <div className="border-t p-4 flex items-end gap-2">
+      <div className="border-t p-4 flex items-end gap-2 w-[100%]">
         <textarea
           value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
+          onChange={handleTextAreaChange}
           placeholder="Write a message..."
-          className="flex-1 min-h-[60px] resize-none rounded-lg border bg-white p-2 focus:outline-none"
+          className="flex-1 min-h-[60px] rounded-lg border bg-white p-2 focus:outline-none break-words"
         />
         <button
           onClick={handleSendMessage}
