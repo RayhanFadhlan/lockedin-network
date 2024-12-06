@@ -166,3 +166,107 @@ export const getRelationStatus = async(userIdLoggedIn : string, userIdTarget : s
 
   return "unconnected";
 }
+
+export const getRecommendedConnections = async (userId: string) => {
+  const id = parseInt(userId);
+
+  const firstLevelConnections = await prisma.connection.findMany({
+    where: {
+      OR: [
+        { from_id: id },
+        { to_id: id }
+      ]
+    },
+    select: {
+      from_id: true,
+      to_id: true
+    }
+  });
+
+  const firstLevel = new Set<number>();
+  for (const user of firstLevelConnections) {
+    firstLevel.add(Number(user.from_id));
+    firstLevel.add(Number(user.to_id));
+  }
+
+  firstLevel.delete(id);
+
+  const secondLevelConnections = await prisma.connection.findMany({
+    where: {
+      OR: [
+        { from_id: { in: Array.from(firstLevel) } },
+        { to_id: { in: Array.from(firstLevel) } }
+      ]
+    },
+    select: {
+      from_id: true,
+      to_id: true
+    }
+  });
+
+  const secondCandidates = new Set<number>();
+  for (const user of secondLevelConnections) {
+    secondCandidates.add(Number(user.from_id));
+    secondCandidates.add(Number(user.to_id));
+  }
+
+  secondCandidates.delete(id);
+  for (const user of firstLevel) {
+    secondCandidates.delete(user);
+  }
+
+  const thirdLevelConnections = await prisma.connection.findMany({
+    where: {
+      OR: [
+        { from_id: { in: Array.from(secondCandidates) } },
+        { to_id: { in: Array.from(secondCandidates) } }
+      ]
+    },
+    select: {
+      from_id: true,
+      to_id: true
+    }
+  });
+
+  const thirdCandidates = new Set<number>();
+  for (const user of thirdLevelConnections) {
+    thirdCandidates.add(Number(user.from_id));
+    thirdCandidates.add(Number(user.to_id));
+  }
+
+  thirdCandidates.delete(id);
+  for (const user of firstLevel) {
+    thirdCandidates.delete(user);
+  }
+  for (const user of secondCandidates) {
+    thirdCandidates.delete(user);
+  }
+
+  const alreadyConnectedOrRequested = new Set<number>();
+
+  const existingRequests = await prisma.connectionRequest.findMany({
+    where: {
+      OR: [
+        { from_id: id },
+        { to_id: id }
+      ]
+    },
+    select: {
+      from_id: true,
+      to_id: true
+    }
+  });
+
+  for (const user of existingRequests) {
+    alreadyConnectedOrRequested.add(Number(user.from_id));
+    alreadyConnectedOrRequested.add(Number(user.to_id));
+  }
+
+  const finalSecondDegree = Array.from(secondCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
+  const finalThirdDegree = Array.from(thirdCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
+
+  return {
+    secondDegree: finalSecondDegree,
+    thirdDegree: finalThirdDegree
+  };
+}
