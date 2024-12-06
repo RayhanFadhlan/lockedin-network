@@ -242,31 +242,35 @@ export const getRecommendedConnections = async (userId: string) => {
     thirdCandidates.delete(user);
   }
 
-  const alreadyConnectedOrRequested = new Set<number>();
+// console.log("firstLevel", firstLevel);
+// console.log("secondCandidates", secondCandidates);
+// console.log("thirdCandidates", thirdCandidates);
 
-  const existingRequests = await prisma.connectionRequest.findMany({
-    where: {
-      OR: [
-        { from_id: id },
-        { to_id: id }
-      ]
-    },
-    select: {
-      from_id: true,
-      to_id: true
-    }
-  });
+//   const alreadyConnectedOrRequested = new Set<number>();
 
-  for (const user of existingRequests) {
-    alreadyConnectedOrRequested.add(Number(user.from_id));
-    alreadyConnectedOrRequested.add(Number(user.to_id));
-  }
+//   const existingRequests = await prisma.connectionRequest.findMany({
+//     where: {
+//       OR: [
+//         { from_id: id },
+//         { to_id: id }
+//       ]
+//     },
+//     select: {
+//       from_id: true,
+//       to_id: true
+//     }
+//   });
 
-  const finalSecondDegree = Array.from(secondCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
-  const finalThirdDegree = Array.from(thirdCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
+//   for (const user of existingRequests) {
+//     alreadyConnectedOrRequested.add(Number(user.from_id));
+//     alreadyConnectedOrRequested.add(Number(user.to_id));
+//   }
+
+//   const finalSecondDegree = Array.from(secondCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
+//   const finalThirdDegree = Array.from(thirdCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
 
   return {
-    secondDegree: finalSecondDegree,
-    thirdDegree: finalThirdDegree
+    secondDegree: Array.from(secondCandidates),
+    thirdDegree: Array.from(thirdCandidates)
   };
 }
