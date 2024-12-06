@@ -69,7 +69,7 @@ export const getConnectedFeeds = async (
 
   return {
     feeds: feedsToReturn,
-    nextCursor: hasMore ? feeds[feeds.length - 2].id : null,
+    cursor: hasMore ? feeds[feeds.length - 2].id : null,
   };
 };
 

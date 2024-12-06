@@ -18,8 +18,8 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-RUN  npx prisma generate
+RUN npx prisma generate
 
+RUN npm run build
 
-# CMD ["node", "index.js"]
-CMD ["npm", "run", "dev"]
+CMD ["node", "dist/src/index.js"]
