@@ -30,10 +30,10 @@ async function main() {
   for (let i = 0; i < 50; i++) {
     const user = await prisma.user.create({
       data: {
-        username: faker.internet.userName(),
+        username: "user" + i,
         email: faker.internet.email(),
         password_hash: hashedPassword,
-        name: faker.person.fullName(),
+        name: "name " + i,
         profile_photo: faker.image.avatar(),
         skills: faker.lorem.words(3),
         work_history: faker.lorem.sentence(),

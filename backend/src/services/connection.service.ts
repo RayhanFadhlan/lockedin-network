@@ -1,6 +1,7 @@
 import {
   getConnectionRequestDb,
   getMutualCount,
+  getRelationStatus,
   isUserConnected,
 } from "../repositories/connection.repository.js";
 
@@ -69,7 +70,7 @@ export const sendConnectionRequest = async (
     where: {
       from_id: id,
       to_id: target,
-    },
+    }
   });
 
   if (existingRequest) {
@@ -77,6 +78,31 @@ export const sendConnectionRequest = async (
       message: "Connection request already exists",
     });
   }
+
+  const existingConnection = await prisma.connection.findFirst({
+    where: {
+      from_id: id,
+      to_id: target,
+    }
+  });
+
+  if (existingConnection) {
+    throw new HttpError(HttpStatus.CONFLICT, {
+      message: "Connection already exists",
+    });
+  }
+
+  const requestToConnection = await prisma.connectionRequest.findFirst({
+    where: {
+      from_id: target,
+      to_id: id,
+    },
+  });
+
+  if(requestToConnection) {
+    return await acceptConnectionRequest(userTarget, userId);
+  }
+
 
   const connectionRequest = await prisma.connectionRequest.create({
     data: {
@@ -150,6 +176,8 @@ export const acceptConnectionRequest = async (
     },
   });
 
+  
+
   await prisma.connection.create({
     data: {
       from_id: target,
@@ -213,6 +241,7 @@ export const getConnection = async (
           tokenUserId,
           String(connection.to_id)
         );
+        const relation = await getRelationStatus(tokenUserId, String(connection.to_id));
 
         return {
           id: String(connection.to_id),
@@ -220,6 +249,7 @@ export const getConnection = async (
           profile_photo: connection.to_user.profile_photo,
           isConnected: isConnected,
           mutual: String(mutual),
+          relation: relation,
         };
       })
     );

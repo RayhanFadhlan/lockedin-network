@@ -112,3 +112,57 @@ export const getConnectedUser = async (userId: string) => {
 
   return connections.map(connection => connection.to_id);
 }
+
+
+export const getRelationStatus = async(userIdLoggedIn : string, userIdTarget : string) => {
+
+  const id = parseInt(userIdLoggedIn);
+  const target = parseInt(userIdTarget);
+
+  const connection = await prisma.connection.findFirst({
+    where: {
+      OR: [
+        {
+          from_id: id,
+          to_id: target
+        },
+        {
+          to_id: target,
+          from_id: id
+        }
+      ]
+    }
+  });
+
+  if (connection) {
+    return "connected";
+  }
+
+  if(id === target) {
+    return "owner";
+  }
+
+
+  const connectionRequest = await prisma.connectionRequest.findFirst({
+    where: {
+      from_id: id,
+      to_id: target
+    }
+  });
+
+  if (connectionRequest) {
+    return "request_sent";
+  }
+  const connectionRequest2 = await prisma.connectionRequest.findFirst({
+    where: {
+      from_id: target,
+      to_id: id
+    }
+  });
+
+  if (connectionRequest2) {
+    return "request_received";
+  }
+
+  return "unconnected";
+}

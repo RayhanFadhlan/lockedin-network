@@ -1,6 +1,6 @@
 import { verify } from "hono/jwt";
 import { findUsers } from "../repositories/user.repository.js";
-import { getMutualCount, isUserConnected } from "../repositories/connection.repository.js";
+import { getMutualCount, getRelationStatus, isUserConnected } from "../repositories/connection.repository.js";
 import { get } from "http";
 
 export const searchUsers = async (
@@ -18,6 +18,7 @@ export const searchUsers = async (
           email: user.email,
           username: user.username,
           profile_photo: user.profile_photo,
+          relation_to : "unauthorized",
         };
       }),
       authenticated : false,
@@ -30,12 +31,14 @@ export const searchUsers = async (
     const usersWithConnectionStatus = await Promise.all(users.map(async user => {
       const isConnected = await isUserConnected(userId, user.id.toString());
       const connectionCount = await getMutualCount( user.id.toString(), userId);
+      const relation = await getRelationStatus(userId, user.id.toString());
       return {
         id: user.id,
         name: user.name,
         profile_photo: user.profile_photo,
         isConnected: !!isConnected,
-        mutual : connectionCount.toString(), 
+        mutual : connectionCount.toString(),
+        relation_to : relation, 
       };
     }));
 

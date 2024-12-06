@@ -3,29 +3,27 @@ import { Input } from "@/components/ui/input";
 import ProfileCard from "@/components/user-card";
 import api from "@/lib/api";
 import { Profile } from "@/lib/types";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import {  useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import { useDebounce } from "use-debounce";
 const UserList = () => {
   const location = useLocation();
   const [search, setSearch] = useState(
     new URLSearchParams(location.search).get("search") || ""
   );
-  const [profiles, setProfiles] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const fetchProfiles = async () => {
-      const response = await api.get("/users", { params: { search } });
-      setProfiles(response.data.body.users);
-      setIsAuthenticated(response.data.body.authenticated);
-    };
+  const [debouncedSearch] = useDebounce(search, 500);
+  const { data } = useQuery({
+    queryKey: ['userlist', debouncedSearch],
+    queryFn: async () => {
+      const response = await api.get("/users", { params: { search: debouncedSearch } });
+      return response.data.body;
+    },
+  });
 
-    const debounceFetch = setTimeout(fetchProfiles, 300);
-
-    return () => clearTimeout(debounceFetch);
-  }, [search]);
-
+  const profiles = data?.users ?? [];
+  const isAuthenticated = data?.authenticated ?? false;
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = e.target.value;
     setSearch(newSearch);
@@ -59,6 +57,7 @@ const UserList = () => {
               isConnected={profile.isConnected}
               mutual={profile.mutual}
               isAuthenticated={isAuthenticated}
+              relation_to={profile.relation_to}
             />
           ))}
         </div>

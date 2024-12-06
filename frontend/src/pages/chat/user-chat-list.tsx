@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Search } from "lucide-react";
 import api from "@/lib/api";
 import { useChatStore } from "@/hooks/useChatStore";
+import { useSearchParams } from "react-router-dom";
 
 interface User {
   userId: string;
@@ -25,6 +26,9 @@ export function UsersChatList({
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -33,6 +37,14 @@ export function UsersChatList({
         const { body, loggedInUserId } = response.data;
         setUsers(body);
         setLoggedInUserId(loggedInUserId);
+
+      const urlUserId = searchParams.get("userId");
+       if (urlUserId) {
+         const user = body.find((u: User) => u.userId == urlUserId);
+         if (user) {
+           onSelectUser(user);
+         }
+       }
       } catch {
         throw new Error("Failed to fetch users");
       }
@@ -40,6 +52,12 @@ export function UsersChatList({
 
     fetchUsers();
   }, []);
+
+
+  const handleSelectUser = (user: User) => {
+    onSelectUser(user);
+    setSearchParams({ userId: user.userId });
+  };
 
   const sortedUsers = useMemo(() => {
     return [...users].sort((a, b) => {
@@ -87,7 +105,7 @@ export function UsersChatList({
             <button
               key={user.userId ? String(user.userId) : `user-${index}`}
               onClick={() => {
-                onSelectUser(user);
+                handleSelectUser(user);
               }}
               className={`w-full px-3 py-2 text-left hover:bg-gray-100  border-b ${
                 selectedUserId === user.userId ? "bg-gray-100 " : ""

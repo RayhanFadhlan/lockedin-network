@@ -2,10 +2,7 @@ import { Button } from "@/components/ui/button";
 import { UsersIcon, Ellipsis, Trash2 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Connection } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
-
-
-
+import { Link, useNavigate } from "react-router-dom";
 
 interface ConnectionCardProps {
   connection: Connection;
@@ -22,9 +19,8 @@ export function ConnectionCard({
   menuOpen,
   toggleMenu,
   onConnect,
-  onUnconnect
+  onUnconnect,
 }: ConnectionCardProps) {
-
   const navigate = useNavigate();
 
   return (
@@ -38,11 +34,14 @@ export function ConnectionCard({
       </div>
       <div className="flex-grow">
         <h3 className="text-md font-semibold">
-          <button  className="text-black hover:underline" onClick={() => navigate(`/profile/${connection.id}`)}>
+          <button
+            className="text-black hover:underline"
+            onClick={() => navigate(`/profile/${connection.id}`)}
+          >
             {connection.name}
           </button>
         </h3>
-      
+
         {connection.mutual && (
           <div className="flex items-center mt-2 text-xs text-muted-foreground">
             <UsersIcon className="w-4 h-4 mr-1" />
@@ -52,11 +51,17 @@ export function ConnectionCard({
       </div>
       <div className="mt-4 sm:mt-0 sm:ml-4 flex flex-row gap-2 sm:flex-row sm:space-y-0 sm:space-x-2 items-center">
         {connection.isConnected ? (
-          <Button variant="outline" className="w-full sm:w-auto">
-            Message
-          </Button>
+          <Link to={`/messaging?userId=${connection.id}`}>
+            <Button variant="outline" className="w-full sm:w-auto">
+              Message
+            </Button>
+          </Link>
         ) : (
-          <Button variant="outline" className="w-full sm:w-auto" onClick={() => onConnect(connection.id)}>
+          <Button
+            variant="outline"
+            className="w-full sm:w-auto"
+            onClick={() => onConnect(connection.id)}
+          >
             Connect
           </Button>
         )}

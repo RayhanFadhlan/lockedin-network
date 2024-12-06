@@ -17,13 +17,12 @@ export default function Chat() {
 
 
 
-
   if(!user) {
     return <Navigate to="/login" />;
   }
 
   return (
-    <div className="flex h-[800px]">
+    <div className="flex h-[80vh]">
       <div className="w-[400px]">
         <UsersChatList
           onSelectUser={setSelectedUser}

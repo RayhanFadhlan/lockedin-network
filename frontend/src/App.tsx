@@ -17,6 +17,7 @@ import { AuthProvider } from "./contexts/authProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotificationToast from "./components/notification-toast";
 import MyFeed from "./pages/home/myfeed";
+import NotFound from "./pages/notfound/notfound";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ function App() {
                 />
                 <Route path="/messaging" element={<Chat />} />
                 <Route path="/myfeed" element={<MyFeed  />} />
+                <Route path="*" element={<NotFound/>} />
               </Routes>
               <Toaster />
             </main>

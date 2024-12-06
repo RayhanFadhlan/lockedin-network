@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+
 import { useParams, useNavigate } from "react-router-dom";
-import { UserPlus, UserMinus, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { Post } from "@/lib/types";
-import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { MultipurposeButton } from "@/components/multipurpose-button";
 
 interface ProfileData {
   username: string;
@@ -15,58 +15,28 @@ interface ProfileData {
   connection_count: number;
   relevant_posts?: Post[];
   relation: "unauthorized" | "unconnected" | "connected" | "owner";
+  relation_to: string;
 }
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user_id } = useParams<{ user_id: string }>();
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
-  const fetchProfile = async () => {
-    try {
+  const { data, error, isLoading } = useQuery<ProfileData>({
+    queryKey: ["profile", user_id],
+    queryFn: async () => {
       const response = await api.get(`/profile/${user_id}`);
-      setProfileData(response.data.body);
-    } catch (error) {
-      console.error(error);
-      navigate("/");
-    }
-  };
-  useEffect(() => {
-  
-    fetchProfile();
-  }, [user_id, navigate]);
-
-  const handleConnect = async () => {
-    await api
-      .post(`/connection/send/${user_id}`)
-      .then(() => {
-        toast.success("Connection request sent");
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error(err.response.data.message);
-      });
-  };
-
-  const handleUnconnect = async () => {
-    await api
-      .delete(`/connection/${user_id}`)
-      .then(() => {
-        toast.success("Connection removed");
-      })
-      .then(() => {
-        fetchProfile();
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error(err.response.data.message);
-      });
-  };
-
-  if (!profileData) {
-    return null;
+      return response.data.body;
+    },
+  });
+  if (isLoading) return <div>Loading...</div>;
+  if(error) {
+    navigate("/");
   }
 
+  if(!data){
+    return null;
+  }
   const {
     username,
     name,
@@ -76,7 +46,65 @@ const Profile = () => {
     connection_count,
     relevant_posts,
     relation,
-  } = profileData;
+    relation_to,
+  } = data;
+
+  
+
+  // const fetchProfile = async () => {
+  //   try {
+  //     const response = await api.get(`/profile/${user_id}`);
+  //     setProfileData(response.data.body);
+  //   } catch (error) {
+  //     console.error(error);
+  //     navigate("/");
+  //   }
+  // };
+  // useEffect(() => {
+
+  //   fetchProfile();
+  // }, [user_id, navigate]);
+
+  // const handleConnect = async () => {
+  //   await api
+  //     .post(`/connection/send/${user_id}`)
+  //     .then(() => {
+  //       toast.success("Connection request sent");
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       toast.error(err.response.data.message);
+  //     });
+  // };
+
+  // const handleUnconnect = async () => {
+  //   await api
+  //     .delete(`/connection/${user_id}`)
+  //     .then(() => {
+  //       toast.success("Connection removed");
+  //     })
+  //     .then(() => {
+  //       fetchProfile();
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       toast.error(err.response.data.message);
+  //     });
+  // };
+
+
+
+  // const {
+  //   username,
+  //   name,
+  //   profile_photo,
+  //   work_history,
+  //   skills,
+  //   connection_count,
+  //   relevant_posts,
+  //   relation,
+  //   relation_to,
+  // } = profileData;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -119,7 +147,8 @@ const Profile = () => {
           </div>
 
           <div className="flex gap-2 mt-2">
-            {relation === "unconnected" && (
+            <MultipurposeButton page="profile" idTarget={user_id} relation_to={relation_to} />
+            {/* {relation === "unconnected" && (
               <Button
                 variant={"default"}
                 onClick={() => handleConnect()}
@@ -144,7 +173,7 @@ const Profile = () => {
                   Unconnect
                 </Button>
               </>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -181,7 +210,7 @@ const Profile = () => {
                 <h2 className="text-xl font-semibold mb-4">Relevant Posts</h2>
                 {relevant_posts.length ? (
                   <ul className="space-y-2">
-                    {relevant_posts.map((post) => (
+                    {relevant_posts.map((post : Post) => (
                       <li key={post.id} className="p-4 border rounded-md">
                         {post.content}
                       </li>
