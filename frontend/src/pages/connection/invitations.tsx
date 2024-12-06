@@ -59,7 +59,7 @@ const Invitations = () => {
 
   return (
     <div className="flex justify-center">
-      <div className="artdecoCard min-w-[45vw] max-w-[90vw] w-full md:w-[45vw]">
+      <div className="artdecoCard min-w-[45vw] max-w-[90vw] w-full md:w-[55vw]">
         <div className="flex flex-row justify-between items-center border-b-2 px-4 py-2">
           <h2 className="text-md font text-foreground">Invitations</h2>
           <Button variant="secondary" className="text-muted-foreground">
