@@ -6,6 +6,7 @@ import {
 import { HttpError, HttpStatus } from "../lib/errors.js";
 import {
   getConnectionCount,
+  getRelationStatus,
   isUserConnected,
 } from "../repositories/connection.repository.js";
 import { getFeedsByUserId } from "../repositories/feed.repository.js";
@@ -29,6 +30,7 @@ export const getProfile = async (userId: string, token: string | undefined) => {
         work_history: user.work_history,
         skills: user.skills,
         relation: "unauthorized",
+        relation_to : "unauthorized",
       },
     };
   } else {
@@ -37,6 +39,7 @@ export const getProfile = async (userId: string, token: string | undefined) => {
     const userId2 = payload.userId as string;
 
     const connection = await isUserConnected(userId, userId2);
+    const relation = await getRelationStatus(userId2, userId);
 
     // Pemilik Profil (Terautentikasi)
     const feeds = await getFeedsByUserId(userId);
@@ -52,9 +55,9 @@ export const getProfile = async (userId: string, token: string | undefined) => {
           work_history: user.work_history,
           skills: user.skills,
           connection_count: connectionCount,
-
           relevant_posts: feeds,
           relation: "owner",
+          relation_to : "owner",
         },
       };
     }
@@ -73,6 +76,7 @@ export const getProfile = async (userId: string, token: string | undefined) => {
           skills: user.skills,
           relevant_posts: feeds,
           relation: "unconnected",
+          relation_to : relation,
         },
       };
     }
@@ -91,6 +95,7 @@ export const getProfile = async (userId: string, token: string | undefined) => {
           skills: user.skills,
           relevant_posts: feeds,
           relation: "connected",
+          relation_to : relation,
         },
       };
     }

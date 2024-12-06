@@ -1,35 +1,38 @@
-import { Button } from "@/components/ui/button";
-import { Mail, UserPlus } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { Mail, UserPlus } from "lucide-react";
 import { Avatar } from "./ui/avatar";
 import { Profile } from "@/lib/types";
 import { Link,  } from "react-router-dom";
-import api from "@/lib/api";
-import toast from "react-hot-toast";
+// import api from "@/lib/api";
+// import toast from "react-hot-toast";
+import { MultipurposeButton } from "./multipurpose-button";
 interface ProfileCardProps extends Profile {
   isAuthenticated: boolean;
+  relation_to: string;
 }
 
 export default function   ProfileCard({
   id,
   name,
   profile_photo,
-  isConnected,
+  // isConnected,
   mutual,
   isAuthenticated,
+  relation_to
 }: ProfileCardProps) {
   // const navigate = useNavigate();
 
-  const handleConnect = async (user_id : string) => {
-    await api
-      .post(`/connection/send/${user_id}`)
-      .then(() => {
-        toast.success("Connection request sent");
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error(err.response.data.message);
-      });
-  };
+  // const handleConnect = async (user_id : string) => {
+  //   await api
+  //     .post(`/connection/send/${user_id}`)
+  //     .then(() => {
+  //       toast.success("Connection request sent");
+  //     })
+  //     .catch((err) => {
+  //       console.error(err);
+  //       toast.error(err.response.data.message);
+  //     });
+  // };
 
   return (
     <div className="artdecoCard w-full sm:w-[184px] overflow-hidden flex flex-col h-full">
@@ -60,27 +63,7 @@ export default function   ProfileCard({
           </div>
 
           <div className="mt-auto w-full">
-            {isAuthenticated ? (
-              isConnected ? (
-                <a href={id}>
-                  <Button variant="outline" className="w-full">
-                    <Mail className="w-4 h-4 mr-2 hidden sm:inline" /> Message
-                  </Button>
-                </a>
-              ) : (
-                
-                  <Button variant="outline" className="w-full" onClick={() => handleConnect(id)}>
-                    <UserPlus className="w-4 h-4 mr-2 hidden sm:inline" />
-                    Connect
-                  </Button>
-           
-              )
-            ) : (
-              <Button variant="outline" className="w-full" disabled>
-                <UserPlus className="w-4 h-4 mr-2 hidden sm:inline" />
-                Connect
-              </Button>
-            )}
+            <MultipurposeButton page="userlist" idTarget={id} relation_to={relation_to}/>
           </div>
         </div>
       </div>

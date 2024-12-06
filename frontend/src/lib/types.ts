@@ -4,6 +4,7 @@ export interface Profile {
   profile_photo: string;
   isConnected: boolean;
   mutual: string;
+  relation_to: string;
 }
 
 export interface Invitation {
