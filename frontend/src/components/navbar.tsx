@@ -108,18 +108,18 @@ const Navbar: React.FC = () => {
 
       {menuOpen && (
         <div className="sm:hidden absolute top-full left-0 w-full bg-white shadow-md z-40">
-          <div className="flex flex-col items-center gap-4 p-4">
+          <div className="flex flex-col items-center gap-5 p-4">
             <NavItem icon={<House />} label="Home" to="/" />
-            <NavItem icon={<Users />} label="My Network" to="/users" />
+            <NavItem icon={<Users />} label="People" to="/users" />
             <NavItem
               icon={<MessageSquareText />}
               label="Messaging"
               to="/messaging"
             />
             <NavItem
-              icon={<BellIcon />}
-              label="Notifications"
-              to="/notifications"
+              icon={<Handshake />}
+              label="Invitation"
+              to="/invitation"
             />
             <UserNav />
           </div>

@@ -36,13 +36,13 @@ export function UserNav() {
         {/* <button>tes</button> */}
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-56"
+        className="w-[100vw] sm:w-56 flex-col"
         align="end"
         forceMount
         sideOffset={12}
       >
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1 items-center">
             <p className="text-sm font-medium leading-none">{user?.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user?.email}
@@ -52,19 +52,24 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem
+          className="flex justify-center"
             onClick={() => navigate(`/profile/${user?.userId}`)}
           >
-            <User className="mr-2 h-4 w-4" />
+            <User className="h-4 w-4" />
             <span>My Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate("/myfeed")}>
-            <FileText className="mr-2 h-4 w-4" />
+          <DropdownMenuItem 
+          className="flex justify-center"
+          onClick={() => navigate("/myfeed")}>
+            <FileText className="h-4 w-4" />
             <span>My Posts</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout}>
-          <LogOut className="mr-2 h-4 w-4" />
+        <DropdownMenuItem 
+        className="flex justify-center"
+        onClick={logout}>
+          <LogOut className="h-4 w-4" />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
