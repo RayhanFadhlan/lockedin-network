@@ -18,27 +18,27 @@ export function FeedProvider({ children }: { children: ReactNode }) {
 
   const createFeedMutation = useMutation({
     mutationFn: (content: string) => 
-      api.post("/feed", { content }).then(res => res.data),
+      api.post("/feed", { content }).then(res => res.data).catch(err => { throw new Error(err.response.data.message) }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
       queryClient.invalidateQueries({ queryKey: ["myfeeds"] });
       toast.success(data.message);
     },
-    onError: () => {
-      toast.error("Failed to create feed");
+    onError: (err) => {
+      toast.error(err.message );
     }
   });
 
   const updateFeedMutation = useMutation({
     mutationFn: ({ id, content }: { id: number; content: string }) =>
-      api.put(`/feed/${id}`, { content }).then(res => res.data),
+      api.put(`/feed/${id}`, { content }).then(res => res.data).catch(err => { throw new Error(err.response.data.message) }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["feeds"] });
       queryClient.invalidateQueries({ queryKey: ["myfeeds"] });
       toast.success(data.message);
     },
-    onError: () => {
-      toast.error("Failed to update feed");
+    onError: (err) => {
+      toast.error(err.message);
     }
   });
 

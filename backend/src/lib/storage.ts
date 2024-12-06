@@ -17,9 +17,16 @@ export const createFile = async (file: File): Promise<string> => {
   const fileURL = `${baseURL}/${filePath.replace(/\\/g, '/')}`;
   return fileURL;
 };
-export const deleteFile = async (fileName: string): Promise<void> => {
-  const filePath = fileName;
+export const deleteFile = async (fileURL: string): Promise<void> => {
+  // Extract the file path from the URL
+  const filePath = fileURL.replace(baseURL, '').replace(/^\//, '');
+  const fullPath = path.join(process.cwd(), uploadsDir, filePath);
+  console.log('Deleting file:', fullPath);
+  console.log('File exists:', fs.existsSync);
+  console.log("file path" , filePath);
   if (fs.existsSync(filePath)) {
     await fs.promises.unlink(filePath);
+  } else {
+    console.error(`File not found: ${filePath}`);
   }
 };

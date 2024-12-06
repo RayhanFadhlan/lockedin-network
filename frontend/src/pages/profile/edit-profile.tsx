@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/authProvider";
 
 const EditProfile = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const { user_id } = useParams<{ user_id: string }>();
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
@@ -20,6 +22,24 @@ const EditProfile = () => {
   const MAX_FILE_SIZE_MB = 5;
   const validFileTypes = ["image/png", "image/jpeg", "image/jpg"];
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await api.get(`/profile/${user_id}`);
+        const profileData = response.data.body;
+        setUsername(profileData.username);
+        setName(profileData.name);
+        setSkills(profileData.skills);
+        setWorkHistory(profileData.work_history);
+      } catch (error) {
+        console.error("Failed to fetch profile data:", error);
+        toast.error("Failed to fetch profile data");
+      }
+    };
+
+    fetchProfile();
+  }, [user_id]);
 
   const handleFileValidation = (file: File) => {
     if (!validFileTypes.includes(file.type)) {
@@ -61,7 +81,6 @@ const EditProfile = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(workHistory);
     const formData = new FormData();
     if (profilePhoto) {
       formData.append("profile_photo", profilePhoto);
@@ -80,6 +99,17 @@ const EditProfile = () => {
       .then(() => {
         toast.success("Profile updated");
         navigate(`/profile/${user_id}`);
+      })
+      .then(() => {
+        api.get("/self").then((res) => {
+          login({
+            userId: res.data.body.userId,
+            name: res.data.body.name,
+            email: res.data.body.email,
+            username: res.data.body.username,
+            profile_photo: res.data.body.profile_photo,
+          });
+        });
       })
       .catch((err) => {
         console.error(err);

@@ -1,10 +1,11 @@
 import { z } from '@hono/zod-openapi'
 
-
+const usernameRegex = /^[^\s@]+$/;
 export const RegisterSchema = z.object({
   username: z.string()
     .min(3, 'Username must be at least 3 characters')
     .max(255, 'Username must be less than 255 characters')
+    .regex(usernameRegex, 'Username cannot be an email')
     .openapi({
       example: 'johndoe'
     }),

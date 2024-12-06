@@ -1,9 +1,9 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { Post } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
+import ReactQuill from "react-quill";
 import { MultipurposeButton } from "@/components/multipurpose-button";
 
 interface ProfileData {
@@ -30,11 +30,11 @@ const Profile = () => {
     },
   });
   if (isLoading) return <div>Loading...</div>;
-  if(error) {
+  if (error) {
     navigate("/");
   }
 
-  if(!data){
+  if (!data) {
     return null;
   }
   const {
@@ -50,61 +50,6 @@ const Profile = () => {
   } = data;
 
   
-
-  // const fetchProfile = async () => {
-  //   try {
-  //     const response = await api.get(`/profile/${user_id}`);
-  //     setProfileData(response.data.body);
-  //   } catch (error) {
-  //     console.error(error);
-  //     navigate("/");
-  //   }
-  // };
-  // useEffect(() => {
-
-  //   fetchProfile();
-  // }, [user_id, navigate]);
-
-  // const handleConnect = async () => {
-  //   await api
-  //     .post(`/connection/send/${user_id}`)
-  //     .then(() => {
-  //       toast.success("Connection request sent");
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       toast.error(err.response.data.message);
-  //     });
-  // };
-
-  // const handleUnconnect = async () => {
-  //   await api
-  //     .delete(`/connection/${user_id}`)
-  //     .then(() => {
-  //       toast.success("Connection removed");
-  //     })
-  //     .then(() => {
-  //       fetchProfile();
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       toast.error(err.response.data.message);
-  //     });
-  // };
-
-
-
-  // const {
-  //   username,
-  //   name,
-  //   profile_photo,
-  //   work_history,
-  //   skills,
-  //   connection_count,
-  //   relevant_posts,
-  //   relation,
-  //   relation_to,
-  // } = profileData;
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -147,33 +92,12 @@ const Profile = () => {
           </div>
 
           <div className="flex gap-2 mt-2">
-            <MultipurposeButton page="profile" idTarget={user_id} relation_to={relation_to} />
-            {/* {relation === "unconnected" && (
-              <Button
-                variant={"default"}
-                onClick={() => handleConnect()}
-                className="text-sm h-8"
-              >
-                <UserPlus className=" h-4 w-4" />
-                Connect
-              </Button>
-            )}
-            {relation === "connected" && (
-              <>
-                <Button variant="default" className="text-sm h-8">
-                  <MessageCircle className="h-4 w-4" />
-                  Message
-                </Button>
-                <Button
-                  variant="outline"
-                  className="text-sm h-8"
-                  onClick={() => handleUnconnect()}
-                >
-                  <UserMinus className="h-4 w-4" />
-                  Unconnect
-                </Button>
-              </>
-            )} */}
+            <MultipurposeButton
+              page="profile"
+              idTarget={user_id}
+              relation_to={relation_to}
+            />
+           
           </div>
         </div>
       </div>
@@ -182,9 +106,11 @@ const Profile = () => {
         <div className="flex justify-between items-start">
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">Work History</h2>
-            <p className="text-gray-600 leading-relaxed">
-              {work_history || "No job history available"}
-            </p>
+            <ReactQuill
+              value={work_history || "No job history available"}
+              readOnly={true}
+              theme="bubble"
+            />
           </div>
         </div>
       </div>
@@ -193,9 +119,12 @@ const Profile = () => {
         <div className="flex justify-between items-start">
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">Skills</h2>
-            <p className="text-gray-600 leading-relaxed">
-              {skills || "No skills available"}
-            </p>
+            <ReactQuill
+              value={skills || "No skills available"}
+              readOnly={true}
+              theme="bubble"
+              
+            />
           </div>
         </div>
       </div>
@@ -210,7 +139,7 @@ const Profile = () => {
                 <h2 className="text-xl font-semibold mb-4">Relevant Posts</h2>
                 {relevant_posts.length ? (
                   <ul className="space-y-2">
-                    {relevant_posts.map((post : Post) => (
+                    {relevant_posts.map((post: Post) => (
                       <li key={post.id} className="p-4 border rounded-md">
                         {post.content}
                       </li>
