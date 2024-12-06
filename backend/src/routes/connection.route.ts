@@ -3,10 +3,43 @@ import { createHono } from "../lib/HonoWrapper.js";
 import { SuccessSchema, UserIdParamsSchema } from "../schemas/default.schema.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { getCookie } from "hono/cookie";
-import { acceptConnectionRequest, getConnection, getConnectionRequest, rejectConnectionRequest, removeConnection, sendConnectionRequest } from "../services/connection.service.js";
+import { acceptConnectionRequest, getAllRecommendations, getConnection, getConnectionRequest, rejectConnectionRequest, removeConnection, sendConnectionRequest } from "../services/connection.service.js";
 
 export const connectionRouter = createHono();
 
+
+const getRecommendedConnectionsRoute = createRoute({
+    method: "get",
+    tags: ["Connection"],
+    path: "/connection/recommended",
+    middleware: [authMiddleware] as const,  
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            schema: SuccessSchema,
+          },
+        },
+        description: "Recommended connections data sent successfully",
+      },
+    },
+    });
+
+    connectionRouter.openapi(getRecommendedConnectionsRoute, async (c) => {
+      const payload = c.get('jwtPayload')
+      const userId = payload.userId;
+      const response = await getAllRecommendations(userId);
+
+      return c.json(
+        {
+          success : true,
+          message : "Recommended connections data sent successfully",
+          body : response
+        },
+        200
+      );
+    });
+    
 const getConnectionRequestRoute = createRoute({
   method: "get",
   tags: ["Connection"],

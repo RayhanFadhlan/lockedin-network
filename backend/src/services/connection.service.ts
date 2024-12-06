@@ -1,6 +1,7 @@
 import {
   getConnectionRequestDb,
   getMutualCount,
+  getRecommendedConnections,
   getRelationStatus,
   isUserConnected,
 } from "../repositories/connection.repository.js";
@@ -327,3 +328,9 @@ export const removeConnection = async (userId: string, userTarget: string) => {
 
   return "Connection removed successfully";
 };
+
+
+export const getAllRecommendations = async (userId: string) => {
+    const connection = await getRecommendedConnections(userId);
+    return connection;
+}
