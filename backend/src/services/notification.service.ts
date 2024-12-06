@@ -50,6 +50,7 @@ export const notifyUser = async (
       title: `New Message from ${userFromName.name}`,
       content: `${message}`,
       avatar: userFromName.profile_photo,
+      url: `/messaging?userId=${userFrom}`,
     },
   });
 
@@ -121,6 +122,7 @@ export const notifyConnection = async (
       title: `New Post from ${requesterName.name}`,
       content: content,
       avatar: requesterName.profile_photo,
+      url: `/`,
     },
   });
 

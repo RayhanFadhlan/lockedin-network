@@ -18,7 +18,7 @@ self.addEventListener('push', (event) => {
       vibrate: [200, 100, 200], 
       tag: 'notification', 
       renotify: true,
-      data: { url: data.url } 
+      data: { url: data.body.url } 
     })
   );
 });

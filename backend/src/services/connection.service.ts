@@ -310,5 +310,20 @@ export const removeConnection = async (userId: string, userTarget: string) => {
     },
   });
 
+  await prisma.chat.deleteMany({
+    where: {
+      OR: [
+        {
+          from_id: id,
+          to_id: target,
+        },
+        {
+          from_id: target,
+          to_id: id,
+        },
+      ],
+    },
+  })
+
   return "Connection removed successfully";
 };
