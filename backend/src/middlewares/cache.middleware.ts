@@ -1,11 +1,7 @@
 import { createMiddleware } from "hono/factory";
 import { Redis } from "ioredis";
 import { HttpError, HttpStatus } from "../lib/errors.js";
-
-const redis = new Redis({
-  host: process.env.REDIS_HOST || "localhost",
-  port: Number(process.env.REDIS_PORT) || 6379,
-});
+import { CacheManager } from "../lib/CacheManager.js";
 
 interface CacheOptions {
   expire?: number;
@@ -13,50 +9,8 @@ interface CacheOptions {
   paths?: string[];
 }
 
-class CacheManager {
-  private redis: Redis;
 
-  constructor(redis: Redis) {
-    this.redis = redis;
-  }
-
-  async get(key: string): Promise<string | null> {
-    try {
-      // console.log("get success");
-      // console.log("key: ", key);
-      return await this.redis.get(key);
-    } catch (error) {
-      console.error("Redis get error:", error);
-      return null;
-    }
-  }
-
-  async set(key: string, value: string, expire?: number): Promise<void> {
-    try {
-      // console.log("set success");
-      if (expire) {
-        await this.redis.setex(key, expire, value);
-      } else {
-        await this.redis.set(key, value);
-      }
-    } catch (error) {
-      console.error("Redis set error:", error);
-    }
-  }
-
-  async delete(pattern: string): Promise<void> {
-    try {
-      const keys = await this.redis.keys(pattern);
-      if (keys.length > 0) {
-        await this.redis.del(...keys);
-      }
-    } catch (error) {
-      console.error("Redis delete error:", error);
-    }
-  }
-}
-
-const cacheManager = new CacheManager(redis);
+const cacheManager = new CacheManager();
 
 export const cacheMiddleware = (options: CacheOptions = {}) => {
   const { expire = 3600, prefix = "cache", paths = ["*"] } = options;

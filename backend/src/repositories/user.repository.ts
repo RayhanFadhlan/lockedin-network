@@ -1,3 +1,4 @@
+import { withCache } from "../lib/functionCache.js";
 import { prisma } from "../lib/prisma.js";
 
 export const createUser = async (
@@ -34,12 +35,13 @@ export const findUserByUsername = async (username: string) => {
   });
 };
 
-export const findUserbyId = async (userId: string) => {
+export const findUserbyId = withCache('user') ( async (userId: string) => {
   const id = parseInt(userId);
   return prisma.user.findUnique({
     where: { id: id },
   });
-};
+}
+);
 
 export const updateUserDetail = async (
   userId: string,
