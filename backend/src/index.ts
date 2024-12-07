@@ -36,7 +36,7 @@ app.use(
     exposeHeaders: ["Location"],
   })
 );
-app.use(timeout(10000));
+// app.use(timeout(10000));
 
 app.get("/tes", (c) => {
   return c.json({ message: BigInt(12345678901234567890) });
