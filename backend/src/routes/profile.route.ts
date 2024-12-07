@@ -16,12 +16,13 @@ import { invalidateCache, profileCacheMiddleware } from "../middlewares/cache.mi
 
 const profileRouter = createHono();
 
-profileRouter.use(profileCacheMiddleware);
+// profileRouter.use(profileCacheMiddleware);
 
 const getProfileRoute = createRoute({
   method: "get",
   tags: ["Profile"],
   path: "/profile/{user_id}",
+  middleware: [profileCacheMiddleware] as const,
   request: {
     params: UserIdParamsSchema
   },
