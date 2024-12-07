@@ -70,7 +70,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
           avatar:
             newMessage.from_id === currentUser.userId
               ? currentUser.profile_photo
-              : user?.profile_photo || "/default-avatar.png",
+              : user?.profile_photo,
         },
       ]);
 
@@ -177,7 +177,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
           avatar:
             message.from_id === currentUser.userId
               ? currentUser.profile_photo
-              : user?.profile_photo || "/default-avatar.png",
+              : user?.profile_photo,
         }));
 
         setMessages(formattedMessages);
@@ -222,7 +222,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
           >
             <div className="flex flex-col items-center">
                 <img
-                src={message.avatar || '/default-avatar.png'}
+                src={message.avatar}
                 alt="Avatar"
                 className="h-8 w-8 rounded-full object-cover"
                 />
@@ -255,7 +255,7 @@ export function ChatPlace({ user, currentUser }: ChatPlaceProps) {
           <div className="mb-4 flex items-start gap-3">
             <div className="flex flex-col items-center">
                 <img
-                src={user.profile_photo || '/default-avatar.png'}
+                src={user.profile_photo}
                 alt="Avatar"
                 className="h-8 w-8 rounded-full object-cover"
                 />

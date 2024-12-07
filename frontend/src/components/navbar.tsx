@@ -1,5 +1,4 @@
 import {
-  BellIcon,
   Handshake,
   House,
   Menu,
