@@ -14,6 +14,7 @@ import feedRouter from "./routes/feed.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import { initSocketServer } from "./services/chat.service.js";
 import { Server as HttpServer } from "node:http";
+import { createServer } from 'node:http2'
 import chatRouter from "./routes/chat.route.js";
 
 
@@ -26,7 +27,7 @@ const app = main.basePath("/api");
 
 main.use("/uploads/*", serveStatic({ root: "./" }));
 
-app.use(logger());
+// app.use(logger());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -112,6 +113,7 @@ console.log(`Server is running on port ${port}`);
 export const httpServer = serve({
   fetch: app.fetch,
   port,
+  createServer
 });
 
 

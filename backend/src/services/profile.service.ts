@@ -120,9 +120,9 @@ export const updateProfile = async (
     throw new HttpError(HttpStatus.UNAUTHORIZED, { message: "Unauthorized" });
   }
   if (user.profile_photo) {
-    console.log("delete file");
+    // console.log("delete file");
     const oldPhoto = user.profile_photo;
-    console.log("delete file", oldPhoto);
+    // console.log("delete file", oldPhoto);
     await deleteFile(oldPhoto);
   }
 

@@ -22,8 +22,8 @@ class CacheManager {
 
   async get(key: string): Promise<string | null> {
     try {
-      console.log("get success");
-      console.log("key: ", key);
+      // console.log("get success");
+      // console.log("key: ", key);
       return await this.redis.get(key);
     } catch (error) {
       console.error("Redis get error:", error);
@@ -33,7 +33,7 @@ class CacheManager {
 
   async set(key: string, value: string, expire?: number): Promise<void> {
     try {
-      console.log("set success");
+      // console.log("set success");
       if (expire) {
         await this.redis.setex(key, expire, value);
       } else {
@@ -64,8 +64,8 @@ export const cacheMiddleware = (options: CacheOptions = {}) => {
   return createMiddleware(async (c, next) => {
     try {
       let currentPath = c.req.path;
-      console.log("paths:", paths);
-      console.log("currentPath: ", currentPath);
+      // console.log("paths:", paths);
+      // console.log("currentPath: ", currentPath);
       if (currentPath.startsWith("/api")) {
         currentPath = currentPath.replace("/api", "");
       }
@@ -75,7 +75,7 @@ export const cacheMiddleware = (options: CacheOptions = {}) => {
       );
 
       if (!shouldCache) {
-        console.log("gk");
+        // console.log("gk");
         return await next();
       }
 
@@ -84,7 +84,7 @@ export const cacheMiddleware = (options: CacheOptions = {}) => {
       const method = c.req.method.toLowerCase();
       const queryParams = new URLSearchParams(c.req.query()).toString();
       const cacheKey = `${prefix}:${currentPath}:${queryParams}`;
-      console.log("cachekey", cacheKey);
+      // console.log("cachekey", cacheKey);
 
       if (method === "get") {
         const cachedData = await cacheManager.get(cacheKey);
@@ -100,10 +100,7 @@ export const cacheMiddleware = (options: CacheOptions = {}) => {
         await cacheManager.set(cacheKey, JSON.stringify(responseBody), expire);
       }
 
-      if (method === "post" || method === "put" || method === "delete") {
-        console.log("deleting!!!!!!!!!!!!!!!!!!!!!111")
-        await cacheManager.delete(`${prefix}:${currentPath}:*`);
-      }
+     
     } catch (error) {
       console.error("Cache middleware error:", error);
       throw new HttpError(HttpStatus.INTERNAL_SERVER_ERROR, {
@@ -114,7 +111,7 @@ export const cacheMiddleware = (options: CacheOptions = {}) => {
 };
 
 export const invalidateCache = async (pattern: string): Promise<void> => {
-  console.log("deleting cache");
+  // console.log("deleting cache");
   await cacheManager.delete(pattern);
 };
 
