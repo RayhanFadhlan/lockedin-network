@@ -244,8 +244,30 @@ export const getRecommendedConnections = async (userId: string) => {
   //   const finalSecondDegree = Array.from(secondCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
   //   const finalThirdDegree = Array.from(thirdCandidates).filter(userid => !alreadyConnectedOrRequested.has(userid));
 
+  const secondDegreeProfiles = await prisma.user.findMany({
+    where: {
+      id: { in: Array.from(secondCandidates) },
+    },
+    select: {
+      id: true,
+      name: true,
+      profile_photo: true,
+    },
+  });
+
+  const thirdDegreeProfiles = await prisma.user.findMany({
+    where: {
+      id: { in: Array.from(thirdCandidates) },
+    },
+    select: {
+      id: true,
+      name: true,
+      profile_photo: true,
+    },
+  });
+
   return {
-    secondDegree: Array.from(secondCandidates),
-    thirdDegree: Array.from(thirdCandidates),
+    secondDegree: secondDegreeProfiles,
+    thirdDegree: thirdDegreeProfiles,
   };
 };
