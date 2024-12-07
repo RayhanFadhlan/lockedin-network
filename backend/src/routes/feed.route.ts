@@ -25,8 +25,11 @@ import {
   getMyFeed,
   updateFeed,
 } from "../services/feed.service.js";
+import { feedCacheMiddleware } from "../middlewares/cache.middleware.js";
 
 const feedRouter = createHono();
+
+// feedRouter.use(feedCacheMiddleware);
 
 const getFeedRoute = createRoute({
   method: "get",

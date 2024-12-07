@@ -13,18 +13,19 @@ services:
       - ./backend/.env
     depends_on:
       - db
+      - redis
     # watch for change for hot reload, volume mounting not work with tsx compile
-    develop:
-      watch:
-        - action: sync
-          path: ./backend
-          target: /home/node/app
-          ignore:
-            - .git
-            - node_modules
-            - .env
-        - action: rebuild
-          path: ./backend/package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./backend
+    #       target: /home/node/app
+    #       ignore:
+    #         - .git
+    #         - node_modules
+    #         - .env
+    #     - action: rebuild
+    #       path: ./backend/package.json
 
   frontend:
     container_name: frontend
@@ -37,17 +38,17 @@ services:
       - ./frontend/.env
     depends_on:
       - backend
-    develop:
-      watch:
-        - action: sync
-          path: ./frontend
-          target: /home/node/app
-          ignore:
-            - .git
-            - node_modules
-            - .env
-        - action: rebuild
-          path: ./frontend/package.json
+    # develop:
+    #   watch:
+    #     - action: sync
+    #       path: ./frontend
+    #       target: /home/node/app
+    #       ignore:
+    #         - .git
+    #         - node_modules
+    #         - .env
+    #     - action: rebuild
+    #       path: ./frontend/package.json
 
   db:
     container_name: db
@@ -58,14 +59,14 @@ services:
       - ./backend/.env
     environment:
       - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=dbpassword
+      - POSTGRES_DB=maindb
     # volumes:
     #   - postgres_data:/var/lib/postgresql/data
 
-  # redis:
-  #   image: redis:latest
+  redis:
+    image: redis:latest
 
 # volumes:
 #   postgres_data:
