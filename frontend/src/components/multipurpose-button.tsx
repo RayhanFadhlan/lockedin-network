@@ -22,7 +22,7 @@ export const MultipurposeButton = ({
       api
         .post(`/connection/send/${user_id}`)
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["user"] });
+          queryClient.invalidateQueries({ queryKey: ["userlist"] });
           queryClient.invalidateQueries({ queryKey: ["profile"] });
           toast.success("Connection request sent");
         })
@@ -37,7 +37,7 @@ export const MultipurposeButton = ({
       api
         .delete(`/connection/${user_id}`)
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["user"] });
+          queryClient.invalidateQueries({ queryKey: ["userlist"] });
           queryClient.invalidateQueries({ queryKey: ["profile"] });
           toast.success("Connection removed");
         })

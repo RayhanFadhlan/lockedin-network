@@ -12,9 +12,11 @@ import path from "path";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { HttpError, HttpStatus } from "../lib/errors.js";
 import { getCookie } from "hono/cookie";
+import { invalidateCache, profileCacheMiddleware } from "../middlewares/cache.middleware.js";
 
 const profileRouter = createHono();
 
+profileRouter.use(profileCacheMiddleware);
 
 const getProfileRoute = createRoute({
   method: "get",
@@ -122,7 +124,7 @@ profileRouter.openapi(updateProfileRoute, async (c) => {
       skills,
       tokenUserId,
     );
-  
+    
     return c.json(
       {
         success: response.success,

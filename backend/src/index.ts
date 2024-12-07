@@ -39,7 +39,18 @@ app.get("/tes", (c) => {
   return c.json({ message: BigInt(12345678901234567890) });
 });
 
-
+main.get("/health", (c) => {
+  return c.json({
+    success: true,
+    message: "health ok!"
+  })
+})
+app.get("/health", (c) => {
+  return c.json({
+    success: true,
+    message: "health ok!"
+  })
+})
 
 app.route("/", authRouter);
 app.route("/", profileRouter);
