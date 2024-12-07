@@ -16,6 +16,7 @@ import { initSocketServer } from "./services/chat.service.js";
 import { Server as HttpServer } from "node:http";
 import { createServer } from 'node:http2'
 import chatRouter from "./routes/chat.route.js";
+import { timeout } from "hono/timeout";
 
 
 const main = new OpenAPIHono();
@@ -35,6 +36,7 @@ app.use(
     exposeHeaders: ["Location"],
   })
 );
+app.use(timeout(10000));
 
 app.get("/tes", (c) => {
   return c.json({ message: BigInt(12345678901234567890) });
@@ -46,7 +48,8 @@ main.get("/health", (c) => {
     message: "health ok!"
   })
 })
-app.get("/health", (c) => {
+app.get("/health", async (c) => {
+  await new Promise((resolve) => setTimeout(resolve, 10000)); 
   return c.json({
     success: true,
     message: "health ok!"
@@ -113,7 +116,7 @@ console.log(`Server is running on port ${port}`);
 export const httpServer = serve({
   fetch: app.fetch,
   port,
-  createServer
+  // createServer
 });
 
 

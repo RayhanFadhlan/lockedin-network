@@ -12,12 +12,18 @@ import {
 import { getFeedsByUserId } from "../repositories/feed.repository.js";
 import { createFile, deleteFile } from "../lib/storage.js";
 
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 export const getProfile = async (userId: string, token: string | undefined) => {
-  const user = await findUserbyId(userId);
+  const [connectionCount, user] = await Promise.all([
+    getConnectionCount(userId),
+    findUserbyId(userId),
+  ]);
+  // const user = await findUserbyId(userId);
+  // const connectionCount = await getConnectionCount(userId);
   if (!user) {
     throw new HttpError(HttpStatus.BAD_REQUEST, { message: "User not found" });
   }
-  const connectionCount = await getConnectionCount(userId);
   if (!token) {
     return {
       success: true,
@@ -35,14 +41,20 @@ export const getProfile = async (userId: string, token: string | undefined) => {
     };
   } else {
     // const token = authHeader.split(" ")[1];
+
+    
     const payload = await verify(token, process.env.JWT_SECRET as string);
     const userId2 = payload.userId as string;
 
-    const connection = await isUserConnected(userId, userId2);
-    const relation = await getRelationStatus(userId2, userId);
+    const [relation, feeds] = await Promise.all([
+      getRelationStatus(userId2, userId),
+      getFeedsByUserId(userId),
+    ]);
 
-    // Pemilik Profil (Terautentikasi)
-    const feeds = await getFeedsByUserId(userId);
+    // const relation = await getRelationStatus(userId2, userId);
+
+    // // Pemilik Profil (Terautentikasi)
+    // const feeds = await getFeedsByUserId(userId);
     if (userId === userId2) {
       return {
         success: true,
@@ -62,7 +74,7 @@ export const getProfile = async (userId: string, token: string | undefined) => {
       };
     }
     // Pengguna Lain Tidak Terkoneksi (Terautentikasi)
-    else if (!connection) {
+    else if (relation ==="unconnected") {
       return {
         success: true,
         body: {
