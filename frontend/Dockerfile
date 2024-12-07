@@ -12,14 +12,11 @@ RUN npm ci
 
 COPY --chown=node:node . .
 
-COPY ./.env.example ./.env
+ENV PORT=5173
 
-ENV PORT=3000
-
-EXPOSE 3000
-
-RUN npx prisma generate
+EXPOSE 5173
 
 RUN npm run build
 
-CMD ["node", "dist/src/index.js"]
+CMD ["npm", "run", "preview", "--", "--host"]
+# CMD ["npm", "run", "dev", "--", "--host"]

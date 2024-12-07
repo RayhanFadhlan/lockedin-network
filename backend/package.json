@@ -1,10 +1,37 @@
 {
   "name": "wbd-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "build": "tsc",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "seed": "tsx prisma/seed.ts"
+    
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.2.0",
+    "@hono/node-server": "^1.13.7",
+    "@hono/swagger-ui": "^0.4.1",
+    "@hono/zod-openapi": "^0.18.0",
+    "@prisma/client": "^5.22.0",
+    "@scalar/hono-api-reference": "^0.5.161",
+    "hono": "^4.6.11",
+    "ioredis": "^5.4.1",
+    "socket.io": "^4.8.1",
+    "web-push": "^3.6.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.11.17",
+    "@types/socket.io": "^3.0.2",
+    "@types/web-push": "^3.6.4",
+    "bcrypt": "^5.1.1",
+    "prisma": "^5.22.0",
+    "tsx": "^4.7.1",
+    "typescript": "^5.6.3"
   },
   "author": "WBD",
   "license": "ISC",

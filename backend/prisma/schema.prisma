@@ -1,0 +1,96 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                BigInt     @id @default(autoincrement())
+  username          String     @unique
+  email             String     @unique
+  password_hash     String
+  name              String     @map("full_name")
+  profile_photo     String     @map("profile_photo_path")
+  skills            String?
+  work_history      String?
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @updatedAt
+  
+  // Relations
+  feeds             Feed[]
+  sent_chats        Chat[]     @relation("SentChats")
+  received_chats    Chat[]     @relation("ReceivedChats")
+  sent_requests     ConnectionRequest[] @relation("SentRequests")
+  received_requests ConnectionRequest[] @relation("ReceivedRequests")
+  sent_connections  Connection[] @relation("SentConnections")
+  received_connections Connection[] @relation("ReceivedConnections")
+  push_subscriptions PushSubscription[]
+
+  @@map("users")
+}
+
+model Feed {
+  id        BigInt    @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  content   String
+  user_id   BigInt
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("feed")
+}
+
+model Chat {
+  id        BigInt    @id @default(autoincrement())
+  timestamp DateTime  @default(now())
+  message   String
+  from_id   BigInt
+  to_id     BigInt
+  
+  // Relations
+  from_user User      @relation("SentChats", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user   User      @relation("ReceivedChats", fields: [to_id], references: [id], onDelete: Cascade)
+
+  @@map("chat")
+}
+
+model ConnectionRequest {
+  from_id   BigInt
+  to_id     BigInt
+  created_at DateTime
+
+  // Relations
+  from_user User      @relation("SentRequests", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user   User      @relation("ReceivedRequests", fields: [to_id], references: [id], onDelete: Cascade)
+
+  @@id([from_id, to_id])
+  @@map("connection_request")
+}
+
+model Connection {
+  from_id   BigInt
+  to_id     BigInt
+  created_at DateTime
+
+  // Relations
+  from_user User      @relation("SentConnections", fields: [from_id], references: [id], onDelete: Cascade)
+  to_user   User      @relation("ReceivedConnections", fields: [to_id], references: [id], onDelete: Cascade)
+
+  @@id([from_id, to_id])
+  @@map("connection")
+}
+
+model PushSubscription {
+  endpoint   String    @id
+  user_id    BigInt?
+  keys       Json
+  created_at DateTime  @default(now())
+  
+  // Relations
+  user       User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("push_subscriptions")
+}
