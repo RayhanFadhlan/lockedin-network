@@ -35,14 +35,16 @@ const UserList = () => {
   return (
     <div className="flex justify-center">
       <div className="artdecoCard max-w-[100vw] md:max-w-[90vw] flex flex-col p-8 pb-12">
-        <Input
-          className="mx-4 bg-muted max-w-[60%] sm:max-w-[40%] mt-4"
-          placeholder="Search for users"
-          value={search}
-          onChange={handleSearchChange}
-        />
+        <div className="flex flex-row">
+          <Input
+            className="mx-4 bg-muted mt-4 text-sm md:text-lg"
+            placeholder="Search for users"
+            value={search}
+            onChange={handleSearchChange}
+          />
+        </div>
         <div className="flex flex-row justify-between items-center mx-4 mt-6">
-          <p className="text-lg">People you may know near your area</p>
+          <p className="text-sm md:text-lg">People you may know near your area</p>
           <Button variant={"secondary"} className="text-muted-foreground">
             See all
           </Button>
