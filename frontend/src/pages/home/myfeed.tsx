@@ -38,7 +38,7 @@ function MyFeed() {
             <Avatar src={user?.profile_photo} className="w-12 h-12 rounded-full" />
             <FeedDialog
               trigger={
-                <button className="w-full h-full rounded-full border-2 font-semibold text-sm text-muted-foreground text-left pl-4 hover:bg-muted border-muted">
+                <button className="w-full rounded-full border-2 font-semibold text-sm text-muted-foreground text-left pl-4 hover:bg-muted border-muted">
                   Inspire the world with your thoughts...
                 </button>
               }
