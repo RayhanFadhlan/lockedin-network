@@ -25,7 +25,7 @@ import {
   getMyFeed,
   updateFeed,
 } from "../services/feed.service.js";
-import { feedCacheMiddleware } from "../middlewares/cache.middleware.js";
+import { feedCacheMiddleware, invalidateCache } from "../middlewares/cache.middleware.js";
 
 const feedRouter = createHono();
 
@@ -107,7 +107,7 @@ feedRouter.openapi(createFeedRoute, async (c) => {
   const payload = c.get("jwtPayload");
   const userId = payload.userId;
   const response = await createFeed(userId, content);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
   return c.json(response, 200);
 });
 
@@ -153,7 +153,7 @@ feedRouter.openapi(updateFeedRoute, async (c) => {
   const payload = c.get("jwtPayload");
   const userId = payload.userId;
   const response = await updateFeed(post_id, content, userId);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
   return c.json(response, 200);
 });
 
@@ -190,7 +190,7 @@ feedRouter.openapi(deleteFeedRoute, async (c) => {
   const payload = c.get("jwtPayload");
   const userId = payload.userId;
   const response = await deleteFeed(post_id, userId);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
   return c.json(response, 200);
 });
 

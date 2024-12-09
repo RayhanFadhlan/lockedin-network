@@ -125,7 +125,7 @@ profileRouter.openapi(updateProfileRoute, async (c) => {
       skills,
       tokenUserId,
     );
-    invalidateCache(`profile::/profile/${user_id}:*`)
+    invalidateCache(`profile:/profile/${user_id}:*`)
     return c.json(
       {
         success: response.success,

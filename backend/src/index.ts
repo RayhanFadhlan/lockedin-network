@@ -17,7 +17,7 @@ import { Server as HttpServer } from "node:http";
 import { createServer } from 'node:http2'
 import chatRouter from "./routes/chat.route.js";
 import { timeout } from "hono/timeout";
-
+import { compress } from 'hono/compress'
 
 const main = new OpenAPIHono();
 
@@ -36,6 +36,7 @@ app.use(
     exposeHeaders: ["Location"],
   })
 );
+app.use(compress());
 // app.use(timeout(10000));
 
 app.get("/tes", (c) => {

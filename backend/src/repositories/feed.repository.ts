@@ -3,25 +3,23 @@ import { withCache } from "../lib/functionCache.js";
 import { prisma } from "../lib/prisma.js";
 import { getConnectedUser } from "./connection.repository.js";
 
-export const getFeedsByUserId = withCache("feeds-user")(
-  async (userId: string) => {
-    const id = parseInt(userId);
-    const feeds = await prisma.feed.findMany({
-      where: {
-        user_id: id,
-      },
-      take: 10,
-      orderBy: {
-        id: "desc",
-      },
-    });
-    return feeds.map((feed) => ({
-      ...feed,
-      id: Number(feed.id),
-      user_id: Number(feed.user_id),
-    }));
-  }
-);
+export const getFeedsByUserId = async (userId: string) => {
+  const id = parseInt(userId);
+  const feeds = await prisma.feed.findMany({
+    where: {
+      user_id: id,
+    },
+    take: 10,
+    orderBy: {
+      id: "desc",
+    },
+  });
+  return feeds.map((feed) => ({
+    ...feed,
+    id: Number(feed.id),
+    user_id: Number(feed.user_id),
+  }));
+};
 
 export const getConnectedFeeds = async (
   userId: string,

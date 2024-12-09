@@ -86,10 +86,7 @@ export const getConnectionRequestDb = async (userId: string) => {
   }));
 };
 
-export const getConnectionCount = withCache(
-  "connectionCount",
-  1800
-)(async (userId: string) => {
+export const getConnectionCount = async (userId: string) => {
   const id = parseInt(userId);
   const connectionCount = await prisma.connection.count({
     where: {
@@ -98,7 +95,7 @@ export const getConnectionCount = withCache(
   });
 
   return connectionCount;
-});
+};
 
 export const getConnectedUser = async (userId: string) => {
   const id = parseInt(userId);
@@ -114,36 +111,37 @@ export const getConnectedUser = async (userId: string) => {
   return connections.map((connection) => connection.to_id);
 };
 
-export const getRelationStatus = withCache("relation")(
-  async (userIdLoggedIn: string, userIdTarget: string) => {
-    const id = parseInt(userIdLoggedIn);
-    const target = parseInt(userIdTarget);
+export const getRelationStatus = async (
+  userIdLoggedIn: string,
+  userIdTarget: string
+) => {
+  const id = parseInt(userIdLoggedIn);
+  const target = parseInt(userIdTarget);
 
-    if (id === target) return "owner";
+  if (id === target) return "owner";
 
-    const [connection, requestSent, requestReceived] = await Promise.all([
-      prisma.connection.findFirst({
-        where: {
-          OR: [
-            { from_id: id, to_id: target },
-            { to_id: target, from_id: id },
-          ],
-        },
-      }),
-      prisma.connectionRequest.findFirst({
-        where: { from_id: id, to_id: target },
-      }),
-      prisma.connectionRequest.findFirst({
-        where: { from_id: target, to_id: id },
-      }),
-    ]);
+  const [connection, requestSent, requestReceived] = await Promise.all([
+    prisma.connection.findFirst({
+      where: {
+        OR: [
+          { from_id: id, to_id: target },
+          { to_id: target, from_id: id },
+        ],
+      },
+    }),
+    prisma.connectionRequest.findFirst({
+      where: { from_id: id, to_id: target },
+    }),
+    prisma.connectionRequest.findFirst({
+      where: { from_id: target, to_id: id },
+    }),
+  ]);
 
-    if (connection) return "connected";
-    if (requestSent) return "request_sent";
-    if (requestReceived) return "request_received";
-    return "unconnected";
-  }
-);
+  if (connection) return "connected";
+  if (requestSent) return "request_sent";
+  if (requestReceived) return "request_received";
+  return "unconnected";
+};
 
 export const getRecommendedConnections = async (userId: string) => {
   const id = parseInt(userId);

@@ -4,6 +4,7 @@ import { SuccessSchema, UserIdParamsSchema } from "../schemas/default.schema.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { getCookie } from "hono/cookie";
 import { acceptConnectionRequest, getAllRecommendations, getConnection, getConnectionRequest, rejectConnectionRequest, removeConnection, sendConnectionRequest } from "../services/connection.service.js";
+import { invalidateCache } from "../middlewares/cache.middleware.js";
 
 export const connectionRouter = createHono();
 
@@ -101,7 +102,8 @@ connectionRouter.openapi(sendConnectionRequestRoute, async (c) => {
   const userTarget = user_id;
 
   const response = await sendConnectionRequest(userId, userTarget);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
+  invalidateCache(`profile:/profile/${userTarget}:*`);
   return c.json(
     {
       success : true,
@@ -159,7 +161,8 @@ connectionRouter.openapi(rejectConnectionRequestRoute, async (c) => {
   const userTarget = user_id;
 
   const response = await rejectConnectionRequest(userId, userTarget);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
+  invalidateCache(`profile:/profile/${userTarget}:*`);
   return c.json(
     {
       success : true,
@@ -178,6 +181,8 @@ connectionRouter.openapi(acceptConnectionRequestRoute, async (c) => {
 
   const response = await acceptConnectionRequest(userId, userTarget);
 
+  invalidateCache(`profile:/profile/${userId}:*`);
+  invalidateCache(`profile:/profile/${userTarget}:*`);
   return c.json(
     {
       success : true,
@@ -251,7 +256,8 @@ connectionRouter.openapi(unconnectRoute, async (c) => {
   const userTarget = user_id;
 
   const response = await removeConnection(userId, userTarget);
-
+  invalidateCache(`profile:/profile/${userId}:*`);
+  invalidateCache(`profile:/profile/${userTarget}:*`);
   return c.json(
     {
       success : true,
