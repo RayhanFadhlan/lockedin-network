@@ -24,35 +24,33 @@ git clone https://github.com/Labpro-21/if-3310-2024-2-k02-05.git
 
 ## How to run the server
 
-1. Make .env file on root
+1. Copy .env.example to .env on ./frontend and ./backend
 
-2. Copy the .env.example file into .env file
-
-3. Run the docker:
+2. Run the docker:
    ```bash
    docker compose build
    docker compose up
    ```
-4. If this is your first time running this website, make a database migrations :
+3. If this is your first time running this website, make a database migrations :
    ```bash
    docker exec -it backend npx prisma migrate dev
    ```
 
 
-5. Seed data (optional)
+4. Seed data (optional)
    ```bash
    docker exec -it backend npm run seed
    ```
 
-6. Open http://localhost:5173
+5. Open http://localhost:5173
 
-7. To stop docker from running : 
+6. To stop docker from running : 
    ```bash
    docker compose down
    ```
 
 ## API Documentation
-Swagger: /docs
+Swagger: http://localhost:3000/api/docs
 
 ## Task Distribution
 | Name | Student-ID | Client-side | Server-side |
@@ -87,17 +85,3 @@ Swagger: /docs
 | Bonus 2 Caching | Done
 | Bonus 3 Connection Recommendation | Done 
 | Bonus 4 Typing Indicator | Done
-
-
-HOW TO RUN (BETTER DEVELOPMENT JGN PAKE DOCKER): <br>
-```
-docker compose build
-docker compose watch
-```
-
-sama kalau baru pertama kali jalanin run command
-```
-docker exec -it backend npx prisma migrate dev
-docker exec -it backend npm run seed
-```
-Kalau mau pake localhost (gapake docker, caranya npm run dev di backend sama frontend), jangan lupa ganti .env di backend
