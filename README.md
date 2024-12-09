@@ -1,7 +1,7 @@
-# MILESTONE 1 IF3110 2024/2025
+# MILESTONE 2 IF3110 2024/2025
 
 ## Web Application Description
-LockedIn is a web-based platform designed to assist job seekers and companies in the recruitment process. Job seekers can search for job listings, apply for relevant positions, and track their application history. Companies can post job openings, manage incoming applications, and make decisions regarding applications. This application is designed with core functionalities to support an efficient and transparent recruitment system.
+LockedIn is a web-based platform designed as a social media that allows every user to connect each other. Every user can share information about their work history, skill, and post. They also can connect with other users and send private messages securely. Everytime a new post or chat come, they will receive a notification about it. This web is designed with core functionalities to support an efficient and transparent communication or connection for all users.
 
 ## Installation Instructions
 1. Install requirements
@@ -36,7 +36,6 @@ git clone https://github.com/Labpro-21/if-3310-2024-2-k02-05.git
    docker exec -it backend npx prisma migrate dev
    ```
 
-
 4. Seed data (optional)
    ```bash
    docker exec -it backend npm run seed
@@ -55,10 +54,10 @@ Swagger: http://localhost:3000/api/docs
 ## Task Distribution
 | Name | Student-ID | Client-side | Server-side |
 |--------------------------|------------|-------------|-------------|
-| Gregorius Moses Marevson | 13520052 | <ul> <li> Profile Page </ul> | <ul> <li> Profile Page </ul> |
-| Ahmad Hasan Albana | 13522041 | <ul> <li> Halaman Detail Lowongan (Job Seeker) <li> Halaman Lamaran (Job Seeker) <li> Halaman Riwayat (Job Seeker) </ul> | <ul> <li> Halaman Detail Lowongan (Job Seeker) <li> Halaman Lamaran (Job Seeker) <li> Halaman Riwayat (Job Seeker) </ul> |
-| Rayhan Fadhlan | 13522095 | <ul> <li> Halaman Login <li> Halaman Tambah Lowongan (Company) <li> Halaman Detail Lowongan (Company) <li> Halaman Detail Lamaran (Company) <li> Bonus 3 </ul> | <ul> <li> Halaman Login <li> Halaman Tambah Lowongan (Company) <li> Halaman Detail Lowongan (Company) <li> Halaman Detail Lamaran (Company) <li> Bonus 3 </ul> |
-| William Glory Henderson | 13522113 | <ul> <li> Halaman Register <li> Halaman Home (Job Seeker) <li> Halaman Home (Company) <li> Halaman Edit Lowongan (Company) <li> Bonus 4 </ul> | <ul> <li> Halaman Register <li> Halaman Home (Job Seeker) <li> Halaman Home (Company) <li> Halaman Edit Lowongan (Company) <li> Bonus 4 </ul> |
+| Gregorius Moses Marevson | 13520052 | <ul> <li> Halaman Register </ul> | <ul> <li> Halaman Register </ul> |
+| Ahmad Hasan Albana | 13522041 | <ul> <li> Halaman Login  <li> Halaman Daftar Koneksi <ul> | <ul> <li> Halaman Login <li> Halaman Daftar Koneksi </ul> |
+| Rayhan Fadhlan | 13522095 | <ul> <li> Halaman Feed <li> Halaman Permintaan Koneksi <li> Halaman Daftar Pengguna <li> Halaman Notifikasi </ul> | <ul> <li> Halaman Feed <li> Halaman Permintaan Koneksi <li> Halaman Daftar Pengguna <li> Halaman Notifikasi <li> Bonus 2 </ul> |
+| William Glory Henderson | 13522113 | <ul> <li> Halaman Profil dan Edit Profil <li> Halaman Chat & Websocket <li> Bonus 3 <li> Bonus 4 </ul> | <ul> <li> Halaman Profil dan Edit Profil <li> Halaman Chat & Websocket <li> Bonus 3 <li> Bonus 4 </ul> |
 
 ## Features
 | Feature | Implement |
@@ -82,6 +81,9 @@ Swagger: http://localhost:3000/api/docs
 | Halaman Daftar Koneksi | Done 
 | Halaman Chat | Done 
 | Bonus 1 UI/UX | Done
-| Bonus 2 Caching | Done
+| Bonus 2 Caching (Redis) | Done
 | Bonus 3 Connection Recommendation | Done 
 | Bonus 4 Typing Indicator | Done
+
+## Load Test Result
+![Hasil Tes](./assets/Load%20Test.png)
