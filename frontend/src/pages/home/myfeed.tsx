@@ -28,12 +28,12 @@ function MyFeed() {
 
   return (
     <FeedProvider>
-      <div className="w-full flex justify-center gap-4">
-        <div className="hidden md:block">
+      <div className="w-full flex flex-col md:flex-row justify-center gap-4">
+        <div className="order-1 w-full md:w-[auto]">
           <ProfileWidget />
         </div>
 
-        <div className="max-w-[100vw] md:max-w-[60vw] flex flex-col gap-4">
+        <div className="order-2 max-w-[100vw] md:max-w-[60vw] flex flex-col gap-4">
           <div className="artdecoCard flex flex-row gap-2 !p-4">
             <Avatar src={user?.profile_photo} className="w-12 h-12 rounded-full" />
             <FeedDialog
