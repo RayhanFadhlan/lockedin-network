@@ -56,7 +56,7 @@ const UserList = () => {
               id={profile.id}
               name={profile.name}
               profile_photo={profile.profile_photo}
-              isConnected={profile.isConnected}
+              // isConnected={profile.isConnected}
               mutual={profile.mutual}
               isAuthenticated={isAuthenticated}
               relation_to={profile.relation_to}

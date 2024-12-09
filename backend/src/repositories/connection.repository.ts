@@ -264,8 +264,32 @@ export const getRecommendedConnections = async (userId: string) => {
     },
   });
 
+  const secondDegreeProfilesWithDetails = await Promise.all(
+    secondDegreeProfiles.map(async (profile) => {
+      const mutualConnections = await getMutualCount(userId, profile.id.toString());
+      const relationStatus = await getRelationStatus(userId, profile.id.toString());
+      return {
+        ...profile,
+        mutual : mutualConnections,
+        relation_to: relationStatus,
+      };
+    })
+  );
+
+  const thirdDegreeProfilesWithDetails = await Promise.all(
+    thirdDegreeProfiles.map(async (profile) => {
+      const mutualConnections = await getMutualCount(userId, profile.id.toString());
+      const relationStatus = await getRelationStatus(userId, profile.id.toString());
+      return {
+        ...profile,
+        mutual : mutualConnections,
+        relation_to: relationStatus,
+      };
+    })
+  );
+
   return {
-    secondDegree: secondDegreeProfiles,
-    thirdDegree: thirdDegreeProfiles,
+    secondDegree: secondDegreeProfilesWithDetails,
+    thirdDegree: thirdDegreeProfilesWithDetails,
   };
 };

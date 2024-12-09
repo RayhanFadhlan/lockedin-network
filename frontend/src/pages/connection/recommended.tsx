@@ -1,23 +1,23 @@
+import { UserRecommendation } from "@/components/recommendation-card";
 import { Button } from "@/components/ui/button";
 import ProfileCard from "@/components/user-card";
 import api from "@/lib/api";
-import { Profile } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 const RecommendationList = () => {
-  const [listUser, setListUser] = useState<Profile[]>([]);
+  const [listUser, setListUser] = useState<UserRecommendation[]>([]);
 
   useEffect(() => {
     const fetchRecommendedConnections = async () => {
       try {
         const response = await api.get("/connection/recommended");
         const combinedData = [
-          ...response.data.body.secondDegree.map((user: any) => ({
+          ...response.data.body.secondDegree.map((user: UserRecommendation) => ({
             ...user,
             id: String(user.id),
             degree: "2nd",
           })),
-          ...response.data.body.thirdDegree.map((user: any) => ({
+          ...response.data.body.thirdDegree.map((user: UserRecommendation) => ({
             ...user,
             id: String(user.id),
             degree: "3rd",
@@ -43,18 +43,16 @@ const RecommendationList = () => {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-4 mb-8 pb-4">
-          {listUser.map((profile: Profile) => (
+          {listUser.map((profile: UserRecommendation) => (
             <ProfileCard
               key={profile.id}
               id={profile.id}
               name={profile.name}
               profile_photo={profile.profile_photo}
-              isConnected={profile.isConnected}
               mutual={profile.mutual}
-            //   kasih degreenya rayhan
-            // diganti dah formatnya
               isAuthenticated={true}
               relation_to={profile.relation_to}
+              degree={profile.degree}
             />
           ))}
         </div>

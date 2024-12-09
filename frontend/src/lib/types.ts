@@ -2,7 +2,7 @@ export interface Profile {
   id: string;
   name: string;
   profile_photo: string;
-  isConnected: boolean;
+  // isConnected: boolean;
   mutual: string;
   relation_to: string;
 }
@@ -31,3 +31,4 @@ export interface Post {
 }
 
 export type Feed = Post & { user: { name: string; profile_photo: string } };
+

@@ -9,6 +9,7 @@ import { MultipurposeButton } from "./multipurpose-button";
 interface ProfileCardProps extends Profile {
   isAuthenticated: boolean;
   relation_to: string;
+  degree?: string;
 }
 
 export default function   ProfileCard({
@@ -18,21 +19,10 @@ export default function   ProfileCard({
   // isConnected,
   mutual,
   isAuthenticated,
-  relation_to
+  relation_to,
+  degree,
 }: ProfileCardProps) {
-  // const navigate = useNavigate();
 
-  // const handleConnect = async (user_id : string) => {
-  //   await api
-  //     .post(`/connection/send/${user_id}`)
-  //     .then(() => {
-  //       toast.success("Connection request sent");
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //       toast.error(err.response.data.message);
-  //     });
-  // };
 
   return (
     <div className="artdecoCard w-full sm:w-[184px] overflow-hidden flex flex-col h-full">
@@ -56,7 +46,10 @@ export default function   ProfileCard({
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-col">
+            <span className="text-sm text-muted-foreground">
+              {degree && `${degree} degree`}
+            </span>
             <span className="text-sm text-muted-foreground">
               {isAuthenticated && `${mutual} mutual connections`}
             </span>
